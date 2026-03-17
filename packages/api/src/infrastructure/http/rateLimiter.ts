@@ -5,6 +5,7 @@
 
 interface Window { count: number; resetAt: number }
 
+const MAX_WINDOWS = 10_000; // H-003: cap memory usage (~10k unique IPs × paths)
 const windows = new Map<string, Window>();
 
 const LIMITS: Record<string, { max: number; windowMs: number }> = {
@@ -29,6 +30,12 @@ export function isRateLimited(ip: string, path: string): boolean {
 
   const w = windows.get(key);
   if (!w || now > w.resetAt) {
+    if (windows.size >= MAX_WINDOWS) {
+      // Evict oldest expired entry to prevent unbounded growth
+      for (const [k, v] of windows.entries()) {
+        if (now > v.resetAt) { windows.delete(k); break; }
+      }
+    }
     windows.set(key, { count: 1, resetAt: now + limit.windowMs });
     return false;
   }

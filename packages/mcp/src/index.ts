@@ -33,11 +33,14 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 
-const API_BASE = process.env['DASHSYNC_API_URL'] ?? 'http://localhost:3001';
+const API_BASE    = process.env['DASHSYNC_API_URL'] ?? 'http://localhost:3001';
+const API_KEY     = process.env['DASHSYNC_API_KEY'] ?? '';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 async function apiGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`);
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (API_KEY) headers['X-Api-Key'] = API_KEY;
+  const res = await fetch(`${API_BASE}${path}`, { headers });
   if (!res.ok) throw new Error(`API ${path} → ${res.status}: ${await res.text()}`);
   return res.json() as Promise<T>;
 }

@@ -1,4 +1,4 @@
-import type { EcrãAtivo, EstadoFiltroDTO, EstadoSessaoDTO, ProjetoId, SessaoId } from './types.js';
+import type { EcraAtivo, EstadoFiltroDTO, EstadoSessaoDTO, ProjetoId, SessaoId } from './types.js';
 
 // ─── WebSocket Control Messages ───────────────────────────────────────────────
 // Tablet → Server → Wall (broadcast)
@@ -6,7 +6,7 @@ import type { EcrãAtivo, EstadoFiltroDTO, EstadoSessaoDTO, ProjetoId, SessaoId 
 export type ControlMessage =
   | { type: 'SELECT_PROJECT';  sessaoId: SessaoId; projetoId: ProjetoId }
   | { type: 'APPLY_FILTER';    sessaoId: SessaoId; filtro: EstadoFiltroDTO }
-  | { type: 'NAVIGATE_SCREEN'; sessaoId: SessaoId; ecrã: EcrãAtivo }
+  | { type: 'NAVIGATE_SCREEN'; sessaoId: SessaoId; ecra: EcraAtivo }
   | { type: 'RELOAD_DATA' }
   | { type: 'PING' }
   | { type: 'PONG' };
@@ -42,12 +42,12 @@ export class FiltroAplicado implements DomainEvent {
   ) {}
 }
 
-export class EcrãSelecionado implements DomainEvent {
+export class EcraSelecionado implements DomainEvent {
   readonly occurredOn = new Date();
-  readonly type = 'EcrãSelecionado' as const;
+  readonly type = 'EcraSelecionado' as const;
   constructor(
     public readonly sessaoId: SessaoId,
-    public readonly ecrã: EcrãAtivo,
+    public readonly ecra: EcraAtivo,
   ) {}
 }
 

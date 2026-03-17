@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import type { EcrãAtivo } from '@dashsync/shared';
+import type { EcraAtivo } from '@dashsync/shared';
 import { ECRAS } from '@dashsync/shared';
 
-const LABELS: Record<EcrãAtivo, string> = {
+const LABELS: Record<EcraAtivo, string> = {
   portfolio: '📊 Portfólio',
   progress:  '📈 Progressos',
   media:     '📷 Evidências',
@@ -10,20 +10,20 @@ const LABELS: Record<EcrãAtivo, string> = {
 };
 
 interface ScreenNavProps {
-  ecrãAtivo:    EcrãAtivo;
-  onNavigate:   (e: EcrãAtivo) => void;
+  ecraAtivo:  EcraAtivo;
+  onNavigate: (e: EcraAtivo) => void;
 }
 
-export const ScreenNav = memo(function ScreenNav({ ecrãAtivo, onNavigate }: ScreenNavProps) {
+export const ScreenNav = memo(function ScreenNav({ ecraAtivo, onNavigate }: ScreenNavProps) {
   return (
     <nav className="screen-nav" aria-label="Navegação de ecrãs">
-      {ECRAS.map(ecrã => (
-        <button key={ecrã}
-          className={`nav-btn ${ecrãAtivo === ecrã ? 'nav-btn-active' : ''}`}
-          onClick={() => onNavigate(ecrã)}
-          aria-pressed={ecrãAtivo === ecrã}
-          aria-label={`Navegar para ${LABELS[ecrã]}`}>
-          {LABELS[ecrã]}
+      {ECRAS.map(ecra => (
+        <button key={ecra}
+          className={`nav-btn ${ecraAtivo === ecra ? 'nav-btn-active' : ''}`}
+          onClick={() => onNavigate(ecra)}
+          aria-pressed={ecraAtivo === ecra}
+          aria-label={`Navegar para ${LABELS[ecra]}`}>
+          {LABELS[ecra]}
         </button>
       ))}
     </nav>

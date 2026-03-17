@@ -7,7 +7,7 @@ import { useState, useCallback } from 'react';
 import { filtroVazio } from '@dashsync/shared';
 
 export function TabletApp() {
-  const { connected, estado, selecionarProjeto, aplicarFiltro, navegarEcrã, recarregarDados } = useTabletControl();
+  const { connected, estado, selecionarProjeto, aplicarFiltro, navegarEcra, recarregarDados } = useTabletControl();
   const [localFiltro, setLocalFiltro] = useState<EstadoFiltroDTO>(filtroVazio);
 
   const handleFiltroChange = useCallback((f: EstadoFiltroDTO) => {
@@ -27,7 +27,7 @@ export function TabletApp() {
         </button>
       </header>
 
-      <ScreenNav ecrãAtivo={estado.ecrãAtivo} onNavigate={navegarEcrã} />
+      <ScreenNav ecraAtivo={estado.ecraAtivo} onNavigate={navegarEcra} />
 
       <main className="tablet-main">
         <FilterPanel filtros={localFiltro} onFiltroChange={handleFiltroChange} />

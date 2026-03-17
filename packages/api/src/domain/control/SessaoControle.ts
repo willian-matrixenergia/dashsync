@@ -1,11 +1,11 @@
-import type { SessaoId, ProjetoId, EcrãAtivo, EstadoFiltroDTO, EstadoSessaoDTO } from '@dashsync/shared';
+import type { SessaoId, ProjetoId, EcraAtivo, EstadoFiltroDTO, EstadoSessaoDTO } from '@dashsync/shared';
 import { filtroVazio, type DomainEvent } from '@dashsync/shared';
-import { ProjetoSelecionado, FiltroAplicado, EcrãSelecionado } from '@dashsync/shared';
+import { ProjetoSelecionado, FiltroAplicado, EcraSelecionado } from '@dashsync/shared';
 
 export class SessaoControle {
   private _projetoSelecionado: ProjetoId | null = null;
   private _filtros: EstadoFiltroDTO = filtroVazio();
-  private _ecrãAtivo: EcrãAtivo = 'portfolio';
+  private _ecraAtivo: EcraAtivo = 'portfolio';
   private _events: DomainEvent[] = [];
 
   constructor(public readonly id: SessaoId) {}
@@ -24,9 +24,9 @@ export class SessaoControle {
     this._events.push(new FiltroAplicado(this.id, filtro));
   }
 
-  navegarEcrã(ecrã: EcrãAtivo): void {
-    this._ecrãAtivo = ecrã;
-    this._events.push(new EcrãSelecionado(this.id, ecrã));
+  navegarEcra(ecra: EcraAtivo): void {
+    this._ecraAtivo = ecra;
+    this._events.push(new EcraSelecionado(this.id, ecra));
   }
 
   get estado(): EstadoSessaoDTO {
@@ -34,7 +34,7 @@ export class SessaoControle {
       sessaoId:           this.id,
       projetoSelecionado: this._projetoSelecionado,
       filtros:            this._filtros,
-      ecrãAtivo:          this._ecrãAtivo,
+      ecraAtivo:          this._ecraAtivo,
       ultimaAtualizacao:  new Date().toISOString(),
     };
   }

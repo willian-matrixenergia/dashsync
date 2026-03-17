@@ -17,7 +17,7 @@ export const TENDENCIAS_COD = ['no_prazo', 'risco', 'atrasado'] as const;
 export type TendenciaCOD = (typeof TENDENCIAS_COD)[number];
 
 export const ECRAS = ['portfolio', 'progress', 'media', 'live'] as const;
-export type EcrãAtivo = (typeof ECRAS)[number];
+export type EcraAtivo = (typeof ECRAS)[number];
 
 export const TIPOS_MEDIA = ['foto', 'video', '360'] as const;
 export type TipoMedia = (typeof TIPOS_MEDIA)[number];
@@ -134,6 +134,6 @@ export interface EstadoSessaoDTO {
   sessaoId:           SessaoId;
   projetoSelecionado: ProjetoId | null;
   filtros:            EstadoFiltroDTO;
-  ecrãAtivo:          EcrãAtivo;
+  ecraAtivo:          EcraAtivo;
   ultimaAtualizacao:  string;  // ISO datetime
 }

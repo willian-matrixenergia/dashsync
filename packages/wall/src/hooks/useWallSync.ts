@@ -10,7 +10,7 @@ const ESTADO_INICIAL: EstadoSessaoDTO = {
   sessaoId:           '' as EstadoSessaoDTO['sessaoId'],
   projetoSelecionado: null,
   filtros:            filtroVazio(),
-  ecrãAtivo:          'portfolio',
+  ecraAtivo:          'portfolio',
   ultimaAtualizacao:  new Date().toISOString(),
 };
 

@@ -1,7 +1,7 @@
 import type { WebSocket } from '@fastify/websocket';
 import type { ControlMessage, ServerMessage, EstadoSessaoDTO } from '@dashsync/shared';
 import { SessaoControle } from '../../domain/control/SessaoControle.js';
-import type { SessaoId, EcrãAtivo, EstadoFiltroDTO, ProjetoId } from '@dashsync/shared';
+import type { SessaoId, EcraAtivo, EstadoFiltroDTO, ProjetoId } from '@dashsync/shared';
 
 type Client = { ws: WebSocket; role: 'wall' | 'tablet' | 'unknown' };
 
@@ -32,7 +32,7 @@ export class ControlHub {
         this.sessao.aplicarFiltro(msg.filtro as EstadoFiltroDTO);
         break;
       case 'NAVIGATE_SCREEN':
-        this.sessao.navegarEcrã(msg.ecrã as EcrãAtivo);
+        this.sessao.navegarEcra(msg.ecra as EcraAtivo);
         break;
       case 'PING':
         return;

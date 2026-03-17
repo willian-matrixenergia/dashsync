@@ -33,10 +33,10 @@ function ConnectionBadge({ connected }: { connected: boolean }) {
 
 export function WallApp() {
   const { estado, connected, dataUpdatedAt } = useWallSync();
-  const { ecrãAtivo, projetoSelecionado, filtros } = estado;
+  const { ecraAtivo, projetoSelecionado, filtros } = estado;
 
   return (
-    <div className="wall-root" data-screen={ecrãAtivo}>
+    <div className="wall-root" data-screen={ecraAtivo}>
       <ConnectionBadge connected={connected} />
 
       {dataUpdatedAt && (
@@ -46,16 +46,16 @@ export function WallApp() {
       )}
 
       <ErrorBoundary>
-        {ecrãAtivo === 'portfolio' && (
+        {ecraAtivo === 'portfolio' && (
           <Screen01Portfolio filtros={filtros} refreshToken={dataUpdatedAt} />
         )}
-        {ecrãAtivo === 'progress' && (
+        {ecraAtivo === 'progress' && (
           <Screen02Progress projetoId={projetoSelecionado} filtros={filtros} refreshToken={dataUpdatedAt} />
         )}
-        {ecrãAtivo === 'media' && (
+        {ecraAtivo === 'media' && (
           <Screen03Media projetoId={projetoSelecionado} refreshToken={dataUpdatedAt} />
         )}
-        {ecrãAtivo === 'live' && (
+        {ecraAtivo === 'live' && (
           <Screen04Live projetoId={projetoSelecionado} />
         )}
       </ErrorBoundary>

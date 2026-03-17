@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ControlMessage, EstadoSessaoDTO, ServerMessage, EcrãAtivo, EstadoFiltroDTO, ProjetoId, SessaoId } from '@dashsync/shared';
+import type { ControlMessage, EstadoSessaoDTO, ServerMessage, EcraAtivo, EstadoFiltroDTO, ProjetoId, SessaoId } from '@dashsync/shared';
 import { filtroVazio } from '@dashsync/shared';
 
 const WS_URL = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws/control?role=tablet`;
@@ -16,7 +16,7 @@ export function useTabletControl() {
     sessaoId:           '' as SessaoId,
     projetoSelecionado: null,
     filtros:            filtroVazio(),
-    ecrãAtivo:          'portfolio',
+    ecraAtivo:          'portfolio',
     ultimaAtualizacao:  new Date().toISOString(),
   });
 
@@ -35,9 +35,9 @@ export function useTabletControl() {
     send({ type: 'APPLY_FILTER', sessaoId: sessaoId.current, filtro });
   }, [send]);
 
-  const navegarEcrã = useCallback((ecrã: EcrãAtivo) => {
+  const navegarEcra = useCallback((ecra: EcraAtivo) => {
     if (!sessaoId.current) return;
-    send({ type: 'NAVIGATE_SCREEN', sessaoId: sessaoId.current, ecrã });
+    send({ type: 'NAVIGATE_SCREEN', sessaoId: sessaoId.current, ecra });
   }, [send]);
 
   const recarregarDados = useCallback(() => {
@@ -82,5 +82,5 @@ export function useTabletControl() {
     };
   }, []);
 
-  return { connected, estado, selecionarProjeto, aplicarFiltro, navegarEcrã, recarregarDados };
+  return { connected, estado, selecionarProjeto, aplicarFiltro, navegarEcra, recarregarDados };
 }

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "dashsync": {
+      "command": "node",
+      "args": ["./packages/mcp/dist/index.js"],
+      "env": {
+        "DASHSYNC_API_URL": "http://localhost:3001",
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
+      }
+    }
+  }
+}

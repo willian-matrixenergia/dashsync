@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  # ── API server ──────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      NODE_ENV: development
+      WS_SECRET: ${WS_SECRET:-dev-secret-change-me-in-production-only}
+      DASHSYNC_API_KEY: ${DASHSYNC_API_KEY:-dev-api-key}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:5174}
+      DATA_DIR: /opt/dashsync/data
+      MEDIA_DIR: /opt/dashsync/media
+      WALL_DIST_DIR: /opt/dashsync/wall/dist
+      TABLET_DIST_DIR: /opt/dashsync/tablet/dist
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_USER: dashsync_rw
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-dashsync_dev_pw}
+      CLICKHOUSE_DB: dashsync
+    volumes:
+      - ./data:/opt/dashsync/data
+      - ./media:/opt/dashsync/media
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── ClickHouse ──────────────────────────────────────────────────────────────
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3
+    ports:
+      - '8123:8123'
+      - '9000:9000'
+    environment:
+      CLICKHOUSE_DB: dashsync
+      CLICKHOUSE_USER: dashsync_rw
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-dashsync_dev_pw}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:8123/ping']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    restart: unless-stopped
+
+volumes:
+  clickhouse_data:

@@ -15,7 +15,7 @@ function getSupabase() {
 router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.query;
+    const { projeto } = req.query as any;
 
     let query = supabase.from('evolution_labor').select('*');
 
@@ -42,9 +42,9 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 router.post('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const payload = req.body as Partial<EvolutionLabor>;
+    const payload = (req.body as any) as Partial<EvolutionLabor>;
 
-    if (!payload.projeto || !payload.semana) {
+    if (!payload?.projeto || !payload?.semana) {
       res.status(400).json({
         success: false,
         error: { message: 'projeto and semana are required' },
@@ -77,7 +77,7 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
 router.get('/:projeto/curva-s', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.params;
+    const { projeto } = req.params as any;
 
     const { data, error } = await supabase
       .from('evolution_labor')
@@ -104,7 +104,7 @@ router.get('/:projeto/curva-s', async (req: Request, res: Response): Promise<voi
 router.get('/:projeto/mod', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.params;
+    const { projeto } = req.params as any;
 
     const { data, error } = await supabase
       .from('evolution_labor')

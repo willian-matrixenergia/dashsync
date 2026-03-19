@@ -15,7 +15,7 @@ function getSupabase() {
 router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.query;
+    const { projeto } = req.query as any;
 
     let query = supabase.from('technical_specs').select('*');
 
@@ -42,7 +42,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 router.get('/:projeto', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.params;
+    const { projeto } = req.params as any;
 
     const { data, error } = await supabase
       .from('technical_specs')
@@ -76,9 +76,9 @@ router.get('/:projeto', async (req: Request, res: Response): Promise<void> => {
 router.post('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const payload = req.body as Partial<TechnicalSpecs>;
+    const payload = (req.body as any) as Partial<TechnicalSpecs>;
 
-    if (!payload.projeto || !payload.programa) {
+    if (!payload?.projeto || !payload?.programa) {
       res.status(400).json({
         success: false,
         error: { message: 'projeto and programa are required' },

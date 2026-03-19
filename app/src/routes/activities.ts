@@ -15,7 +15,7 @@ function getSupabase() {
 router.get('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.query;
+    const { projeto } = req.query as any;
 
     let query = supabase.from('internal_activities').select('*');
 
@@ -42,9 +42,9 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 router.post('/', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const payload = req.body as Partial<InternalActivity>;
+    const payload = (req.body as any) as Partial<InternalActivity>;
 
-    if (!payload.projeto || !payload.atividade) {
+    if (!payload?.projeto || !payload?.atividade) {
       res.status(400).json({
         success: false,
         error: { message: 'projeto and atividade are required' },
@@ -77,7 +77,7 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
 router.get('/:projeto/gantt', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.params;
+    const { projeto } = req.params as any;
 
     const { data, error } = await supabase
       .from('internal_activities')
@@ -104,7 +104,7 @@ router.get('/:projeto/gantt', async (req: Request, res: Response): Promise<void>
 router.get('/:projeto/speedometer', async (req: Request, res: Response): Promise<void> => {
   try {
     const supabase = getSupabase();
-    const { projeto } = req.params;
+    const { projeto } = req.params as any;
 
     const { data, error } = await supabase
       .from('internal_activities')

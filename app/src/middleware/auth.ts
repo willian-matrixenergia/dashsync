@@ -15,7 +15,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
     return;
   }
 
-  const key = (req.headers['x-api-key'] as string) || (req.query.api_key as string);
+  const key = (req.headers['x-api-key'] as string) || ((req.query as any)?.api_key as string);
 
   if (!key || key !== API_KEY) {
     res.status(401).json({ success: false, error: { message: 'Unauthorized', code: 'INVALID_API_KEY' } });

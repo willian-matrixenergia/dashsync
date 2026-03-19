@@ -1,57 +1,52 @@
-import Fastify from 'fastify';
-import cors from '@fastify/cors';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { InMemoryPortfolioRepository } from './infrastructure/repositories/InMemoryPortfolioRepository.js';
 import { InMemoryProgressoRepository } from './infrastructure/repositories/InMemoryProgressoRepository.js';
 import { ControlHub } from './infrastructure/ws/ControlHub.js';
-import { registerRoutes } from './infrastructure/http/routes.js';
-import { getCorsOptions } from './infrastructure/http/authMiddleware.js';
+import { buildRouter } from './infrastructure/http/routes.js';
+import { applyCors, applySecurityHeaders, apiKeyAuth, sendJson } from './infrastructure/http/authMiddleware.js';
 import { isRateLimited } from './infrastructure/http/rateLimiter.js';
 
 export function createApp() {
-  const app = Fastify({
-    logger: { level: 'info' },
-    disableRequestLogging: false,
-  });
-
   const portfolioRepo = new InMemoryPortfolioRepository();
   const progressoRepo = new InMemoryProgressoRepository();
   const hub = new ControlHub();
+  const router = buildRouter(portfolioRepo, progressoRepo, hub);
 
-  // Security Headers
-  app.addHook('onSend', async (_req, reply) => {
-    void reply.header('X-Content-Type-Options', 'nosniff');
-    void reply.header('X-Frame-Options', 'DENY');
-    void reply.header('Referrer-Policy', 'strict-origin-when-cross-origin');
-    void reply.header('X-XSS-Protection', '0');
-    void reply.header('Content-Security-Policy',
-      "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; " +
-      "img-src 'self' data: blob:; connect-src 'self' wss:; frame-src 'none'");
-  });
+  function handler(req: IncomingMessage, res: ServerResponse): void {
+    // CORS
+    if (applyCors(req, res)) return;
 
-  // Rate Limiter
-  app.addHook('preHandler', async (req, reply) => {
-    const ip = req.ip ?? '0.0.0.0';
-    if (isRateLimited(ip, req.url)) {
-      await reply.status(429).send({
-        error: 'Too many requests. Please try again later.',
-      });
+    // Security headers
+    applySecurityHeaders(res);
+
+    const url = new URL(req.url ?? '/', 'http://localhost');
+    const pathname = url.pathname;
+    const method = req.method ?? 'GET';
+
+    // Rate limit
+    const ip = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim() ?? '0.0.0.0';
+    if (isRateLimited(ip, pathname)) {
+      sendJson(res, 429, { error: 'Too many requests. Please try again later.' });
+      return;
     }
-  });
 
-  // CORS
-  void app.register(cors, getCorsOptions());
+    // Auth
+    if (apiKeyAuth(req, res, pathname)) return;
 
-  // Routes
-  void registerRoutes(app, portfolioRepo, progressoRepo, hub);
+    // Route
+    const match = router.match(method, pathname);
+    if (!match) {
+      sendJson(res, 404, { error: 'Not found' });
+      return;
+    }
 
-  // Error handler (no internal details to client)
-  app.setErrorHandler(async (error, _req, reply) => {
-    app.log.error(error);
-    const statusCode = error.statusCode ?? 500;
-    await reply.status(statusCode).send({
-      error: statusCode >= 500 ? 'Internal server error' : error.message,
+    match.handler(req, res, match.params).catch((err: unknown) => {
+      console.error(err);
+      if (!res.headersSent) {
+        sendJson(res, 500, { error: 'Internal server error' });
+      }
     });
-  });
+  }
 
-  return { app, portfolioRepo, progressoRepo, hub };
+  return { handler, portfolioRepo, progressoRepo, hub };
 }

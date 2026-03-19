@@ -1,14 +1,15 @@
 {
-  "buildCommand": "cd ../.. && pnpm --filter @dashsync/shared build && pnpm --filter @dashsync/api build",
+  "buildCommand": "cd ../.. && pnpm --filter @dashsync/shared build && pnpm --filter @dashsync/wall build && pnpm --filter @dashsync/tablet build && pnpm --filter @dashsync/api build",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "framework": null,
-  "outputDirectory": ".",
+  "outputDirectory": "../wall/dist",
   "functions": {
     "api/index.ts": {
       "maxDuration": 30
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/api" }
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

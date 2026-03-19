@@ -1,6 +1,3 @@
 {
-  "version": 2,
-  "buildCommand": "npm run build:api",
-  "installCommand": "npm install",
-  "outputDirectory": "dist"
+  "version": 2
 }

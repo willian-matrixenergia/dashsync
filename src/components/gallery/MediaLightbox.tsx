@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState, useEffect } from 'react';
 import { MediaItem } from '../../types';
 import { format } from 'date-fns';
@@ -25,6 +26,7 @@ export default function MediaLightbox({ items, initialIndex, onClose, onNext }: 
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex, items.length]);
 
   const handleNext = () => {

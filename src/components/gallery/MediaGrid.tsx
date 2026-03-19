@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { MediaItem } from '../../types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';

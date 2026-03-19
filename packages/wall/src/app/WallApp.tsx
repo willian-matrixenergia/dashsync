@@ -6,12 +6,12 @@ import { Screen03Media }      from '../screens/Screen03Media.js';
 import { Screen04Live }       from '../screens/Screen04Live.js';
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  state = { hasError: false };
+  override state = { hasError: false };
   static getDerivedStateFromError(): { hasError: boolean } { return { hasError: true }; }
-  componentDidCatch(err: Error, info: ErrorInfo): void {
+  override componentDidCatch(err: Error, info: ErrorInfo): void {
     console.error('[DashSync Wall Error]', err, info);
   }
-  render(): ReactNode {
+  override render(): ReactNode {
     if (this.state.hasError) return (
       <div className="error-boundary">
         <h2>Erro na renderização</h2>

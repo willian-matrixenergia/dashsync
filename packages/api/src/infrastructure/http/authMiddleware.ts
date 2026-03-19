@@ -17,7 +17,7 @@ function isValidApiKey(provided: string): boolean {
 
 export async function apiKeyAuth(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   // Check if current path is public (no auth required)
-  const url = (req.url ?? '').split('?')[0]; // Remove query string for comparison
+  const url: string = (req.url ?? '').split('?')[0];
   if (PUBLIC_PATHS.has(url)) return;
   if (url.startsWith('/media/') || url.startsWith('/wall/') || url.startsWith('/tablet/')) return;
 

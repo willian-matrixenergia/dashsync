@@ -12,8 +12,8 @@ interface FiltersProps {
 
 export default function Filters({ projects, filters, onChange }: FiltersProps) {
   // Extract unique values
-  const programas = [...new Set(projects.map((p) => p.programa))].sort();
-  const fases = [...new Set(projects.map((p) => p.fase).filter(Boolean))].sort();
+  const programas = [...new Set(projects.map((p) => p.programa).filter((val): val is string => Boolean(val)))].sort();
+  const fases = [...new Set(projects.map((p) => p.fase).filter((val): val is string => Boolean(val)))].sort();
   const criticidades = ['Alta', 'Média', 'Baixa'];
 
   const handleChange = (key: string, value: string) => {

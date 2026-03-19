@@ -2,16 +2,10 @@
   "version": 2,
   "buildCommand": "npm run build:api",
   "installCommand": "npm install",
-  "builds": [
+  "rewrites": [
     {
-      "src": "dist/index.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "dist/index.js"
+      "source": "/(.*)",
+      "destination": "/api/index.js"
     }
   ]
 }

@@ -1,0 +1,141 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# DashSync — Tracking Plan v1.0
+# All events fire via the AnalyticsService → ClickHouse dashboard_events table
+# ══════════════════════════════════════════════════════════════════════════════
+
+metadata:
+  version: "1.0.0"
+  updated: "2026-03-17"
+  owner: "Engineering"
+  pii_policy: "No PII in event properties. Coordinator/supervisor names are stored
+               only in project data, never in event payloads."
+
+# ─── KPI Framework (Adapted AARRR for internal tooling) ─────────────────────
+kpi_framework:
+  Adoption:           # How quickly teams onboard the dashboard
+    - sessions_per_week          # Target: ≥ 5 per meeting cycle
+    - screens_visited_per_session # Target: ≥ 2 (portfolio + progress)
+    - tablet_connected_ratio      # Target: 100% during meetings
+
+  Activation:         # First meaningful interaction
+    - time_to_first_project_selection_ms   # Target: < 30s
+    - first_session_screens_visited        # Target: ≥ 2
+
+  Retention:          # Return usage
+    - weekly_active_sessions               # Target: trending up
+    - scurve_views_per_session             # Target: ≥ 1 per project meeting
+
+  Engagement:         # Depth of use
+    - avg_session_duration_min             # Target: > 10 min (meeting length)
+    - filter_changes_per_session           # Target: 2–5 (active exploration)
+    - critical_project_views_rate          # Target: > 80% of critical projects viewed
+
+  Reliability:        # System health KPIs
+    - data_reload_success_rate             # Target: 100%
+    - ws_reconnection_rate                 # Target: < 5% of sessions
+    - excel_parse_error_rate               # Target: 0%
+
+# ─── Events ──────────────────────────────────────────────────────────────────
+events:
+
+  - name: screen_viewed
+    table: dashboard_events
+    trigger: "User navigates to a screen via tablet ScreenNav or URL"
+    device: [wall, tablet]
+    properties:
+      ecra:          { type: string, required: true, enum: [portfolio, progress, media, live] }
+      event_type:    { value: screen_viewed }
+      sessao_id:     { type: string, required: true }
+      device_type:   { type: string, required: true }
+    not_fire_when:   "Same screen already active (no re-fire on refresh)"
+    pii: false
+
+  - name: project_selected
+    table: dashboard_events
+    trigger: "User taps a project in the tablet ProjectList"
+    device: [tablet]
+    properties:
+      ecra:          { value: portfolio }
+      event_type:    { value: project_selected }
+      projeto_id:    { type: string, required: true }
+      sessao_id:     { type: string, required: true }
+      device_type:   { value: tablet }
+    not_fire_when:   "Same project already selected"
+    pii: false
+
+  - name: filter_applied
+    table: dashboard_events
+    trigger: "User changes any filter in FilterPanel (debounced 500ms)"
+    device: [tablet]
+    properties:
+      ecra:          { value: portfolio }
+      event_type:    { value: filter_applied }
+      filtro_json:   { type: string, description: "Serialized EstadoFiltroDTO" }
+      sessao_id:     { type: string, required: true }
+      device_type:   { value: tablet }
+    pii: false
+
+  - name: data_reloaded
+    table: dashboard_events
+    trigger: "Excel watcher detects file change and successfully reloads data"
+    device: [server]
+    properties:
+      ecra:          { value: portfolio }
+      event_type:    { value: data_reloaded }
+      sessao_id:     { value: "system" }
+      device_type:   { value: server }
+    pii: false
+
+  - name: ws_reconnected
+    table: dashboard_events
+    trigger: "WebSocket client reconnects after a drop"
+    device: [wall, tablet]
+    properties:
+      ecra:          { type: string }
+      event_type:    { value: ws_reconnected }
+      sessao_id:     { type: string }
+      device_type:   { type: string }
+      duracao_ms:    { type: number, description: "Downtime duration in ms" }
+    pii: false
+
+  - name: media_viewed
+    table: dashboard_events
+    trigger: "User opens a photo or video in the lightbox (Screen 03)"
+    device: [wall]
+    properties:
+      ecra:          { value: media }
+      event_type:    { value: media_viewed }
+      projeto_id:    { type: string, required: true }
+      sessao_id:     { type: string }
+      device_type:   { value: wall }
+    pii: false
+
+  - name: tour360_opened
+    table: dashboard_events
+    trigger: "User clicks the 360° tour button"
+    device: [wall, tablet]
+    properties:
+      ecra:          { value: media }
+      event_type:    { value: tour360_opened }
+      projeto_id:    { type: string, required: true }
+      sessao_id:     { type: string }
+    pii: false
+
+# ─── Funnel: Meeting session ──────────────────────────────────────────────────
+funnels:
+  meeting_session:
+    description: "Typical executive meeting flow"
+    steps:
+      1_open_portfolio:  { event: screen_viewed, ecra: portfolio }
+      2_select_project:  { event: project_selected }
+      3_view_progress:   { event: screen_viewed, ecra: progress }
+      4_view_evidence:   { event: screen_viewed, ecra: media }
+    success_criteria:   "Steps 1–3 completed in sequence within 60 minutes"
+
+# ─── Validation ───────────────────────────────────────────────────────────────
+validation:
+  - "Events fire on user action, not page load"
+  - "sessao_id persists across WebSocket reconnections (server-side)"
+  - "Timestamps stored in UTC (DateTime64(3))"
+  - "No coordinator/supervisor names in event payloads"
+  - "De-dup: ReplacingMergeTree handles duplicate event_time within same session"

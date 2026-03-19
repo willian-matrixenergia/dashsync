@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { EvolutionLabor } from '../../types.js';
+import { EvolutionLabor } from '../../types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

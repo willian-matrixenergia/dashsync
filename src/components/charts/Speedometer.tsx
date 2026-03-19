@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { InternalActivity } from '../../types.js';
+import { InternalActivity } from '../../types';
 
 interface SpeedometerProps {
   activities: InternalActivity[];

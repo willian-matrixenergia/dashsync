@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
-import { MediaItem } from '../types.js';
-import MediaUpload from './gallery/MediaUpload.js';
-import MediaGrid from './gallery/MediaGrid.js';
-import MediaLightbox from './gallery/MediaLightbox.js';
+import { MediaItem } from '../types';
+import MediaUpload from './gallery/MediaUpload';
+import MediaGrid from './gallery/MediaGrid';
+import MediaLightbox from './gallery/MediaLightbox';
 
 interface Screen3Props {
   projeto: string;

@@ -1,4 +1,4 @@
-import { PortfolioMaster } from '../types.js';
+import { PortfolioMaster } from '../types';
 
 interface ProjectTableProps {
   projects: PortfolioMaster[];

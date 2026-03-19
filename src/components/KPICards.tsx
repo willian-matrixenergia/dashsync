@@ -1,4 +1,4 @@
-import { PortfolioMaster } from '../types.js';
+import { PortfolioMaster } from '../types';
 
 interface KPICardsProps {
   projects: PortfolioMaster[];

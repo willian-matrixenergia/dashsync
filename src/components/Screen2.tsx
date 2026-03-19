@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { EvolutionLabor, InternalActivity } from '../types.js';
-import CurvaS from './charts/CurvaS.js';
-import MODHistogram from './charts/MODHistogram.js';
-import Speedometer from './charts/Speedometer.js';
+import { EvolutionLabor, InternalActivity } from '../types';
+import CurvaS from './charts/CurvaS';
+import MODHistogram from './charts/MODHistogram';
+import Speedometer from './charts/Speedometer';
 
 interface Screen2Props {
   projeto: string;

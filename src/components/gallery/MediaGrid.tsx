@@ -1,4 +1,4 @@
-import { MediaItem } from '../../types.js';
+import { MediaItem } from '../../types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

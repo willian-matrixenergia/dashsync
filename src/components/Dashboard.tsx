@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PortfolioMaster, TechnicalSpecs } from '../types.js';
+import { PortfolioMaster, TechnicalSpecs } from '../types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

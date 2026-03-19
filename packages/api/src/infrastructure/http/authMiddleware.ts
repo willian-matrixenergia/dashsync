@@ -15,12 +15,19 @@ function isValidApiKey(provided: string): boolean {
   return timingSafeEqual(Buffer.from(provided), Buffer.from(API_KEY));
 }
 
+function getRoutePath(req: FastifyRequest): string {
+  const fromRoute = req.routeOptions?.url;
+  if (typeof fromRoute === 'string') return fromRoute;
+  const rawUrl = req.url;
+  if (typeof rawUrl !== 'string') return '';
+  const qIndex = rawUrl.indexOf('?');
+  return qIndex === -1 ? rawUrl : rawUrl.substring(0, qIndex);
+}
+
 export async function apiKeyAuth(req: FastifyRequest, reply: FastifyReply): Promise<void> {
-  // Check if current path is public (no auth required)
-  const rawUrl = req.url ?? '';
-  const url = (rawUrl.split('?')[0]) || '';
-  if (PUBLIC_PATHS.has(url)) return;
-  if (url.startsWith('/media/') || url.startsWith('/wall/') || url.startsWith('/tablet/')) return;
+  const path = getRoutePath(req);
+  if (PUBLIC_PATHS.has(path)) return;
+  if (path.startsWith('/media/') || path.startsWith('/wall/') || path.startsWith('/tablet/')) return;
 
   const key = (req.headers['x-api-key'] as string | undefined)
            ?? (req.query as Record<string, string>)['api_key']

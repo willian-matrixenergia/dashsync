@@ -1,4 +1,4 @@
-import type { WebSocket } from '@fastify/websocket';
+import type { WebSocket } from 'ws';
 import type { ControlMessage, ServerMessage, EstadoSessaoDTO } from '@dashsync/shared';
 import { SessaoControle } from '../../domain/control/SessaoControle.js';
 import type { SessaoId, EcraAtivo, EstadoFiltroDTO, ProjetoId } from '@dashsync/shared';

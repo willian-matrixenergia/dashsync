@@ -1,13 +1,8 @@
-import type { IncomingMessage, ServerResponse } from 'http';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createApp } from '../src/app.js';
 
-const { app } = createApp();
-const ready = app.ready();
+const { handler } = createApp();
 
-export default async function handler(
-  req: IncomingMessage,
-  res: ServerResponse,
-): Promise<void> {
-  await ready;
-  app.server.emit('request', req, res);
+export default function handle(req: IncomingMessage, res: ServerResponse): void {
+  handler(req, res);
 }

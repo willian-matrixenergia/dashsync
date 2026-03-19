@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently \"pnpm --filter @dashsync/api dev\" \"pnpm --filter @dashsync/wall dev\" \"pnpm --filter @dashsync/tablet dev\"",
+    "dev": "concurrently \"cd app && npm run dev:api\" \"pnpm --filter @dashsync/wall dev\" \"pnpm --filter @dashsync/tablet dev\"",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",

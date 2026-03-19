@@ -46,7 +46,7 @@ export function createApp() {
 
   // Error handler (no internal details to client)
   app.setErrorHandler(async (error, _req, reply) => {
-    app.log.error(error);
+    console.error('API Error:', error);
     const statusCode = error.statusCode ?? 500;
     await reply.status(statusCode).send({
       error: statusCode >= 500 ? 'Internal server error' : error.message,

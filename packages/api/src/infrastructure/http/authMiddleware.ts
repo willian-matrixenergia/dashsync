@@ -15,7 +15,7 @@ function isValidApiKey(provided: string): boolean {
 }
 
 function isPublicPath(url: string): boolean {
-  return url === '/api/health' || url.startsWith('/api/health?')
+  return url === '/' || url === '/api/health' || url.startsWith('/api/health?')
       || url === '/api/debug/auth' || url.startsWith('/api/debug/auth?')
       || url.startsWith('/ws/')
       || url.startsWith('/media/')

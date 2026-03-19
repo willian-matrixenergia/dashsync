@@ -25,6 +25,13 @@ export async function registerRoutes(
   // Apply auth middleware to all non-public routes
   app.addHook('preHandler', apiKeyAuth);
 
+  // Root endpoint (public info)
+  app.get('/', async () => ({
+    api: 'DashSync API v1.0',
+    status: 'operational',
+    timestamp: new Date().toISOString(),
+  }));
+
   app.get('/api/health', async () => ({ ok: true, timestamp: new Date().toISOString() }));
 
   // Debug endpoint (public) to help diagnose auth issues

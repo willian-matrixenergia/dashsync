@@ -17,6 +17,16 @@ app.use(cors());
 app.use(express.json());
 app.use(authMiddleware);
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    api: 'DashSync API v1.0',
+    status: 'operational',
+    endpoints: ['/api/portfolio', '/api/evolution', '/api/activities', '/api/specs', '/health'],
+    docs: 'https://github.com/willian-matrixenergia/dashsync'
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ ok: true, timestamp: new Date().toISOString() });

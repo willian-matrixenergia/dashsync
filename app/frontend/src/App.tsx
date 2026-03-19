@@ -25,7 +25,8 @@ export default function App() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch('/api/portfolio');
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        const response = await fetch(`${apiUrl}/api/portfolio`);
         const data = await response.json();
         if (data.success) {
           setProjects(data.data);

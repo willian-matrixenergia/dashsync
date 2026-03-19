@@ -27,6 +27,22 @@ export async function registerRoutes(
 
   app.get('/api/health', async () => ({ ok: true, timestamp: new Date().toISOString() }));
 
+  // Debug endpoint (public) to help diagnose auth issues
+  app.get('/api/debug/auth', async (req) => {
+    const providedKey = (req.headers['x-api-key'] as string | undefined) ?? '';
+    const envKeyExists = !!process.env['DASHSYNC_API_KEY'];
+    const envKeyLength = process.env['DASHSYNC_API_KEY']?.length ?? 0;
+    const providedKeyLength = providedKey.length;
+    return {
+      envKeyConfigured: envKeyExists,
+      envKeyLength,
+      providedKeyLength,
+      providedKeyPreview: providedKey.slice(0, 20) + '...',
+      match: envKeyExists && providedKeyLength === envKeyLength,
+      message: !envKeyExists ? 'API Key not configured in environment' : providedKeyLength !== envKeyLength ? 'Key length mismatch' : 'Keys match',
+    };
+  });
+
   app.get('/api/session', async () => hub.getEstado());
 
   app.get('/api/projects', async (req, reply) => {

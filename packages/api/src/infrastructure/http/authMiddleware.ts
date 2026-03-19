@@ -7,7 +7,7 @@ import { timingSafeEqual } from 'crypto';
 
 const API_KEY         = process.env['DASHSYNC_API_KEY'] ?? '';
 const ALLOWED_ORIGINS = (process.env['ALLOWED_ORIGINS'] ?? '').split(',').map(s => s.trim()).filter(Boolean);
-const PUBLIC_PATHS    = new Set(['/api/health', '/ws/control']);
+const PUBLIC_PATHS    = new Set(['/api/health', '/api/debug/auth', '/ws/control']);
 
 function isValidApiKey(provided: string): boolean {
   if (!API_KEY) return true; // dev mode: no key configured → allow all

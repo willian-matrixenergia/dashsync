@@ -14,9 +14,17 @@ function isValidApiKey(provided: string): boolean {
   return timingSafeEqual(Buffer.from(provided), Buffer.from(API_KEY));
 }
 
+function isPublicPath(url: string): boolean {
+  return url === '/api/health' || url.startsWith('/api/health?')
+      || url === '/api/debug/auth' || url.startsWith('/api/debug/auth?')
+      || url.startsWith('/ws/')
+      || url.startsWith('/media/')
+      || url.startsWith('/wall/')
+      || url.startsWith('/tablet/');
+}
+
 export async function apiKeyAuth(req: FastifyRequest, reply: FastifyReply): Promise<void> {
-  const routeConfig = req.routeOptions?.config as unknown as Record<string, unknown> | undefined;
-  if (routeConfig?.['isPublic'] === true) return;
+  if (isPublicPath(req.url)) return;
 
   const key = (req.headers['x-api-key'] as string | undefined)
            ?? (req.query as Record<string, string>)['api_key']

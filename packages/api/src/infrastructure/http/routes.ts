@@ -25,10 +25,10 @@ export async function registerRoutes(
   // Apply auth middleware to all non-public routes
   app.addHook('preHandler', apiKeyAuth);
 
-  app.get('/api/health', { config: { isPublic: true } }, async () => ({ ok: true, timestamp: new Date().toISOString() }));
+  app.get('/api/health', async () => ({ ok: true, timestamp: new Date().toISOString() }));
 
   // Debug endpoint (public) to help diagnose auth issues
-  app.get('/api/debug/auth', { config: { isPublic: true } }, async (req) => {
+  app.get('/api/debug/auth', async (req) => {
     const providedKey = (req.headers['x-api-key'] as string | undefined) ?? '';
     const envKeyExists = !!process.env['DASHSYNC_API_KEY'];
     const envKeyLength = process.env['DASHSYNC_API_KEY']?.length ?? 0;

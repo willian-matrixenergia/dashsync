@@ -7,7 +7,7 @@
     "dev:api": "tsx watch src/index.ts",
     "dev:web": "cd frontend && npm run dev",
     "build:api": "tsc",
-    "build:web": "cd frontend && npm run build",
+    "build:web": "cd frontend && npm install && npm run build",
     "build": "npm run build:api && npm run build:web",
     "start": "node dist/index.js",
     "type-check": "tsc --noEmit"

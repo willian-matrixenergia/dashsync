@@ -16,8 +16,10 @@ function isValidApiKey(provided: string): boolean {
 }
 
 export async function apiKeyAuth(req: FastifyRequest, reply: FastifyReply): Promise<void> {
-  if (PUBLIC_PATHS.has(req.routeOptions?.url ?? req.url)) return; // SR-001 handled by WS
-  if (req.url.startsWith('/media/') || req.url.startsWith('/wall/') || req.url.startsWith('/tablet/')) return;
+  // Check if current path is public (no auth required)
+  const url = req.url.split('?')[0]; // Remove query string for comparison
+  if (PUBLIC_PATHS.has(url)) return;
+  if (url.startsWith('/media/') || url.startsWith('/wall/') || url.startsWith('/tablet/')) return;
 
   const key = (req.headers['x-api-key'] as string | undefined)
            ?? (req.query as Record<string, string>)['api_key']

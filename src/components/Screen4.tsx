@@ -365,11 +365,11 @@ export default function Screen4({ projeto }: Screen4Props) {
                   <>
                     <div className="bg-gray-800 rounded-lg p-4">
                       <p className="text-gray-400 text-xs uppercase">Latitude</p>
-                      <p className="text-white font-semibold mt-1 text-sm">{selectedCamera.latitude.toFixed(4)}</p>
+                      <p className="text-white font-semibold mt-1 text-sm">{selectedCamera.latitude?.toFixed(4)}</p>
                     </div>
                     <div className="bg-gray-800 rounded-lg p-4">
                       <p className="text-gray-400 text-xs uppercase">Longitude</p>
-                      <p className="text-white font-semibold mt-1 text-sm">{selectedCamera.longitude.toFixed(4)}</p>
+                      <p className="text-white font-semibold mt-1 text-sm">{selectedCamera.longitude?.toFixed(4)}</p>
                     </div>
                   </>
                 )}

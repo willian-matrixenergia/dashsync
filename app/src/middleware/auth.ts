@@ -4,7 +4,7 @@ const API_KEY = process.env.API_KEY;
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction): void {
   // Skip auth for public endpoints
-  if (req.path === '/health') {
+  if (req.path === '/' || req.path === '/health') {
     next();
     return;
   }

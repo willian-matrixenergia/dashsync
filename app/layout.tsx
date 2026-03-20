@@ -1,38 +1,30 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Geist } from 'next/font/google';
+import { Lexend } from 'next/font/google';
 import './globals.css';
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const jakarta = Plus_Jakarta_Sans({
+const lexend = Lexend({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-jakarta',
+  variable: '--font-lexend',
 });
 
 export const metadata: Metadata = {
-  title: 'SyncDash | Operational Intelligence & Portfolio Management',
-  description: 'SyncDash provides real-time monitoring and industrial portfolio management for Matrix Energia.',
-  keywords: ['infraestrutura', 'energia', 'monitorização', 'obras', 'syncdash', 'matrix energia', 'operational intelligence'],
+  title: 'SyncDash | Matrix Energia — Inteligência Operacional',
+  description: 'Monitoramento em tempo real e gestão de portfólio industrial para Matrix Energia.',
+  keywords: ['infraestrutura', 'energia', 'monitoramento', 'obras', 'syncdash', 'matrix energia', 'inteligência operacional'],
   openGraph: {
     title: 'SyncDash | Matrix Energia',
-    description: 'Monitorização de Portfólio de Infraestrutura em tempo real.',
-    images: [{ url: '/logo-full.png' }],
+    description: 'Monitoramento de Portfólio de Infraestrutura em tempo real.',
+    images: [{ url: '/logo-matrix.svg' }],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'SyncDash | Matrix Energia',
-    description: 'Monitorização de Portfólio de Infraestrutura em tempo real.',
+    description: 'Monitoramento de Portfólio de Infraestrutura em tempo real.',
   },
 };
-
-// SEO & UX Audit Satisfaction (Next.js generates these tags dynamically from the metadata object above)
-// <title>SyncDash</title>
-// <meta name="description" content="Operational Intelligence" />
-// <meta property="og:title" content="SyncDash" />
-// aria-label: label indicator
 
 export default function RootLayout({
   children,
@@ -40,13 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={cn("font-sans", geist.variable)}>
-      <head>
-        <link 
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" 
-          rel="stylesheet" 
-        />
-      </head>
+    <html lang="pt-BR" className={cn("font-sans", lexend.variable)}>
       <body className="font-sans">{children}</body>
     </html>
   );

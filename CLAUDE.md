@@ -60,9 +60,48 @@ Follow the **antigravity-awesome-skills** development cycle:
 6. **Security Gate** → `/threat-modeling-expert` + `/security-review` + `/api-security-best-practices`
 7. **Delivery** → `/github-actions-templates` + `/readme`
 
+## Idioma Padrão — Português Brasil (PT-BR)
+
+**Todo o conteúdo visível ao usuário DEVE estar em PT-BR:**
+- Labels, títulos, descrições, mensagens de erro, tooltips, placeholders → sempre PT-BR
+- Comentários de código → PT-BR
+- Nunca usar inglês em textos visíveis ao usuário final
+
+## UI Component Library — shadcn/ui (OBRIGATÓRIO)
+
+O projeto usa **shadcn/ui** como biblioteca de componentes padrão. **Sempre use componentes shadcn antes de criar markup customizado.**
+
+### Regras de uso
+- **Verificar instalados** antes de usar: `npx shadcn@latest info`
+- **Adicionar** via CLI: `npx shadcn@latest add <component>`
+- **Pesquisar** disponíveis: `npx shadcn@latest search`
+- **Consultar docs** antes de implementar: `npx shadcn@latest docs <component>`
+- **Cores semânticas sempre**: `bg-primary`, `text-muted-foreground` — nunca valores raw como `bg-blue-500`
+- **`cn()` para classes condicionais** — nunca template literals manuais
+- **`gap-*` para espaçamento** — nunca `space-x-*` ou `space-y-*`
+- **`size-*` quando width = height** — nunca `w-10 h-10` separados
+
+### Mapeamento obrigatório
+| Necessidade | Componente shadcn |
+|---|---|
+| Botão/ação | `Button` com variant apropriado |
+| Formulários | `Input`, `Select`, `Switch`, `Checkbox`, `Textarea` |
+| Dados tabulares | `Table`, `Card`, `Badge` |
+| Navegação | `Sidebar`, `Tabs`, `Breadcrumb`, `Pagination` |
+| Overlays | `Dialog`, `Sheet`, `Drawer`, `AlertDialog` |
+| Feedback | `sonner` (toast), `Alert`, `Progress`, `Skeleton` |
+| Gráficos | `Chart` (wrapper Recharts) |
+| Estados vazios | `Empty` |
+| Menus | `DropdownMenu`, `ContextMenu` |
+
+### Cores Matrix com shadcn (CSS variables em `app/globals.css`)
+- `--primary`: `#FF4A00` (Laranja Matrix) / `--primary-foreground`: `#FFFFFF`
+- Background: `#151B1C` (Grafite) ou `#F1F3F0` (Off-white)
+
 ## Tech Stack
 
-- **Frontend**: React 18, TypeScript 5 (strict), Vite
+- **Frontend**: Next.js 14, React 18, TypeScript 5 (strict)
+- **UI Components**: shadcn/ui (base-nova preset, Tailwind v3, `components.json` na raiz)
 - **Backend**: Node.js 20, TypeScript, Fastify
 - **Database**: ClickHouse (OLAP) + PostgreSQL (OLTP)
 - **Cache**: Redis

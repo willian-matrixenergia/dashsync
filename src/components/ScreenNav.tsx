@@ -27,6 +27,7 @@ export default function ScreenNav({ currentScreen, onScreenChange, selectedProje
             <button
               key={screen.num}
               onClick={() => onScreenChange(screen.num)}
+              aria-label={`Navegar para ${screen.label}`}
               className={`px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 ${
                 currentScreen === screen.num
                   ? 'bg-blue-600 text-white shadow-lg'

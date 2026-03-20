@@ -9,8 +9,14 @@ const lexend = Lexend({
 });
 
 export const metadata: Metadata = {
-  title: 'DashSync',
-  description: 'Monitorização de Portfólio de Infraestrutura',
+  title: 'DashSync | Matrix Energia - Monitorização de Infraestrutura',
+  description: 'Plataforma DashSync para monitorização em tempo real de portfólio de obras e infraestrutura da Matrix Energia.',
+  keywords: ['infraestrutura', 'energia', 'monitorização', 'obras', 'dashsync', 'matrix energia'],
+  openGraph: {
+    title: 'DashSync | Matrix Energia',
+    description: 'Monitorização de Portfólio de Infraestrutura em tempo real.',
+    images: [{ url: '/logo-full.png' }], // Assuming there's a logo or default image
+  },
 };
 
 export default function RootLayout({

@@ -40,6 +40,8 @@ export default function KPICards({ projects }: KPICardsProps) {
       {cards.map((card, idx) => (
         <div
           key={idx}
+          role="article"
+          aria-label={`${card.title}: ${card.value}`}
           className="bg-matrix-graphite border border-white/10 rounded-xl shadow-2xl p-6 transition-all hover:border-matrix-orange/50 group"
         >
           <div className="flex justify-between items-start">

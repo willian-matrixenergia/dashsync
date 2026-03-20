@@ -89,6 +89,7 @@ export default function MediaUpload({ projeto, onUpload, loading }: MediaUploadP
         }`}
       >
         <input
+          id="file-upload"
           ref={fileInputRef}
           type="file"
           multiple
@@ -96,6 +97,7 @@ export default function MediaUpload({ projeto, onUpload, loading }: MediaUploadP
           onChange={handleChange}
           disabled={loading}
           className="hidden"
+          aria-label="Upload de imagens"
         />
 
         <div className="text-5xl mb-4">📸</div>

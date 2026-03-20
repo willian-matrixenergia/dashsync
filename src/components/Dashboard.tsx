@@ -37,11 +37,12 @@ export default function Dashboard({ project, onClose }: DashboardProps) {
       {/* Header */}
       <div className="flex justify-between items-start border-b border-white/5 pb-6">
         <div>
-          <h2 className="text-4xl font-black text-white mb-2 tracking-tight">{project.projeto}</h2>
+          <h1 className="text-4xl font-black text-white mb-2 tracking-tight">{project.projeto}</h1>
           <p className="text-matrix-orange font-bold uppercase tracking-widest text-xs">{project.programa}</p>
         </div>
         <button
           onClick={onClose}
+          aria-label="Fechar detalhes do projeto"
           className="text-white/40 hover:text-matrix-orange text-2xl p-2 transition-colors"
         >
           ✕
@@ -71,7 +72,7 @@ export default function Dashboard({ project, onClose }: DashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Prazos */}
         <div className="bg-white/5 border border-white/5 rounded-xl p-6">
-          <h3 className="text-sm font-bold text-matrix-orange uppercase tracking-widest mb-6 border-b border-white/5 pb-2">Prazos & Cronograma</h3>
+          <h2 className="text-sm font-bold text-matrix-orange uppercase tracking-widest mb-6 border-b border-white/5 pb-2">Prazos & Cronograma</h2>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <p className="text-xs text-matrix-offwhite/60 uppercase font-bold">Início</p>
@@ -90,7 +91,7 @@ export default function Dashboard({ project, onClose }: DashboardProps) {
 
         {/* Equipe */}
         <div className="bg-white/5 border border-white/5 rounded-xl p-6">
-          <h3 className="text-sm font-bold text-matrix-orange uppercase tracking-widest mb-6 border-b border-white/5 pb-2">Equipe de Gestão</h3>
+          <h2 className="text-sm font-bold text-matrix-orange uppercase tracking-widest mb-6 border-b border-white/5 pb-2">Equipe de Gestão</h2>
           <div className="grid grid-cols-2 gap-6">
             <div>
               <p className="text-[10px] text-matrix-offwhite/40 uppercase font-bold mb-1">Coordenador</p>
@@ -117,7 +118,7 @@ export default function Dashboard({ project, onClose }: DashboardProps) {
         <div className="bg-matrix-orange/10 border-l-4 border-matrix-orange rounded-r-xl p-6 animate-pulse">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-2xl">⚠️</span>
-            <h3 className="text-lg font-black text-matrix-orange uppercase tracking-widest italic">Alertas Críticos</h3>
+            <h2 className="text-lg font-black text-matrix-orange uppercase tracking-widest italic">Alertas Críticos</h2>
           </div>
           <p className="text-matrix-offwhite/80 text-sm leading-relaxed">{project.descricao_riscos || 'Sem descrição'}</p>
           {project.resumo_atraso && (

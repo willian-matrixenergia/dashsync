@@ -95,6 +95,7 @@ export default function ProjectTable({
                 </td>
                 <td className="py-4 px-6">
                   <button
+                    aria-label={`Ver detalhes do projeto ${project.projeto}`}
                     className="bg-white/5 hover:bg-matrix-orange hover:text-white text-matrix-offwhite/80 px-4 py-1.5 rounded-lg transition-all text-xs font-bold uppercase tracking-wider"
                   >
                     Detalhes

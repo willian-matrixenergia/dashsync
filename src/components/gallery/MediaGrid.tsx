@@ -18,7 +18,7 @@ export default function MediaGrid({ items, onSelect, onDelete, selectedId }: Med
       case 'Obras':
         return { bg: 'bg-orange-600', icon: '🏗️' };
       case 'Aéreas':
-        return { bg: 'bg-purple-600', icon: '🚁' };
+        return { bg: 'bg-cyan-600', icon: '🚁' };
       default:
         return { bg: 'bg-gray-600', icon: '📸' };
     }

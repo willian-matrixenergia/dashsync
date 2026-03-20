@@ -16,22 +16,22 @@ export default function KPICards({ projects }: KPICardsProps) {
     {
       title: 'Potência Total',
       value: `${totalPotencia.toFixed(0)} MW`,
-      color: 'from-blue-600 to-blue-400',
+      icon: '⚡',
     },
     {
       title: 'Total de Projetos',
       value: totalProjetos.toString(),
-      color: 'from-purple-600 to-purple-400',
+      icon: '📁',
     },
     {
       title: 'Avanço Físico Médio',
       value: `${mediaFisico.toFixed(1)}%`,
-      color: 'from-green-600 to-green-400',
+      icon: '🏗️',
     },
     {
       title: 'Avanço Financeiro Médio',
       value: `${mediaFinanceiro.toFixed(1)}%`,
-      color: 'from-orange-600 to-orange-400',
+      icon: '💰',
     },
   ];
 
@@ -40,10 +40,14 @@ export default function KPICards({ projects }: KPICardsProps) {
       {cards.map((card, idx) => (
         <div
           key={idx}
-          className={`bg-gradient-to-br ${card.color} rounded-lg shadow-lg p-6 text-white`}
+          className="bg-matrix-graphite border border-white/10 rounded-xl shadow-2xl p-6 transition-all hover:border-matrix-orange/50 group"
         >
-          <p className="text-sm font-medium opacity-90">{card.title}</p>
-          <p className="text-3xl font-bold mt-2">{card.value}</p>
+          <div className="flex justify-between items-start">
+            <p className="text-xs font-bold text-matrix-offwhite/60 uppercase tracking-widest">{card.title}</p>
+            <span className="text-xl group-hover:scale-110 transition-transform">{card.icon}</span>
+          </div>
+          <p className="text-3xl font-bold mt-4 text-white group-hover:text-matrix-orange transition-colors">{card.value}</p>
+          <div className="h-1 w-0 bg-matrix-orange mt-4 transition-all group-hover:w-full rounded-full" />
         </div>
       ))}
     </div>

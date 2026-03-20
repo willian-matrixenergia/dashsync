@@ -33,16 +33,18 @@ export default function MODHistogram({ data }: MODHistogramProps) {
       {
         label: 'MOD Prevista',
         data: prevista,
-        backgroundColor: '#a78bfa',
-        borderColor: '#8b5cf6',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        borderColor: 'rgba(255, 255, 255, 0.3)',
         borderWidth: 1,
+        borderRadius: 4,
       },
       {
         label: 'MOD Real',
         data: real,
-        backgroundColor: '#34d399',
-        borderColor: '#10b981',
+        backgroundColor: '#FF4A00',
+        borderColor: '#FF4A00',
         borderWidth: 1,
+        borderRadius: 4,
       },
     ],
   };
@@ -53,26 +55,34 @@ export default function MODHistogram({ data }: MODHistogramProps) {
     plugins: {
       legend: {
         display: true,
+        position: 'top' as const,
+        align: 'end' as const,
         labels: {
-          color: '#d1d5db',
-          font: { size: 12 },
+          color: 'rgba(241, 243, 240, 0.6)',
+          font: { family: 'Lexend', size: 10, weight: 'bold' as const },
+          usePointStyle: true,
+          pointStyle: 'circle',
         },
       },
       tooltip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        titleColor: '#fff',
-        bodyColor: '#d1d5db',
+        backgroundColor: '#151B1C',
+        titleColor: '#FF4A00',
+        bodyColor: '#F1F3F0',
+        borderColor: 'rgba(255, 74, 0, 0.2)',
+        borderWidth: 1,
+        padding: 12,
+        cornerRadius: 8,
       },
     },
     scales: {
       y: {
         beginAtZero: true,
-        grid: { color: 'rgba(107, 114, 128, 0.2)' },
-        ticks: { color: '#9ca3af' },
+        grid: { color: 'rgba(241, 243, 240, 0.05)' },
+        ticks: { color: 'rgba(241, 243, 240, 0.4)', font: { family: 'Lexend', size: 10 } },
       },
       x: {
-        grid: { color: 'rgba(107, 114, 128, 0.2)' },
-        ticks: { color: '#9ca3af' },
+        grid: { display: false },
+        ticks: { color: 'rgba(241, 243, 240, 0.4)', font: { family: 'Lexend', size: 10 } },
       },
     },
   };

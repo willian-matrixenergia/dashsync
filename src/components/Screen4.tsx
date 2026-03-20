@@ -93,56 +93,63 @@ export default function Screen4({ projeto }: Screen4Props) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'online':
-        return { bg: 'bg-green-900', text: 'text-green-400', label: 'Online' };
+        return { bg: 'bg-matrix-orange/20', text: 'text-matrix-orange', label: 'Online' };
       case 'standby':
-        return { bg: 'bg-yellow-900', text: 'text-yellow-400', label: 'Standby' };
+        return { bg: 'bg-white/10', text: 'text-matrix-offwhite/60', label: 'Standby' };
       case 'offline':
-        return { bg: 'bg-red-900', text: 'text-red-400', label: 'Offline' };
+        return { bg: 'bg-red-900/40', text: 'text-red-400', label: 'Offline' };
       default:
-        return { bg: 'bg-gray-900', text: 'text-gray-400', label: 'Desconhecido' };
+        return { bg: 'bg-white/5', text: 'text-matrix-offwhite/20', label: 'Desconhecido' };
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-in fade-in duration-700">
       {/* Header */}
-      <div className="bg-gray-900 rounded-lg shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Tela 04: Tour 360° e Monitoramento</h1>
-        <p className="text-gray-400">Visualização imersiva e monitoramento ao vivo do projeto {projeto}</p>
+      <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-matrix-orange/10 blur-[100px] rounded-full -mr-32 -mt-32 group-hover:bg-matrix-orange/20 transition-all duration-1000" />
+        <h1 className="text-4xl font-black text-white mb-2 italic tracking-tighter">Tela 04: Tour & Monitoramento</h1>
+        <p className="text-matrix-offwhite/60 font-medium uppercase tracking-widest text-xs flex items-center gap-2">
+          <span className="w-2 h-2 bg-matrix-orange rounded-full animate-pulse" />
+          Operação em tempo real e visualização imersiva {projeto}
+        </p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-gray-900 rounded-lg shadow-lg p-4">
-        <div className="flex gap-2 flex-wrap">
+      <div className="bg-white/5 border border-white/5 rounded-2xl p-4 backdrop-blur-md">
+        <div className="flex gap-4 flex-wrap pb-4 border-b border-white/5 mb-4">
           <button
             onClick={() => setActiveTab('tour')}
-            className={`px-6 py-3 rounded-lg font-medium transition ${
+            className={`px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
               activeTab === 'tour'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                ? 'bg-matrix-orange text-white shadow-xl shadow-matrix-orange/20 scale-105'
+                : 'bg-white/5 text-matrix-offwhite/40 hover:bg-white/10 border border-white/5'
             }`}
           >
             🎥 Tour 360°
           </button>
           <button
             onClick={() => setActiveTab('cameras')}
-            className={`px-6 py-3 rounded-lg font-medium transition ${
+            className={`px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
               activeTab === 'cameras'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                ? 'bg-matrix-orange text-white shadow-xl shadow-matrix-orange/20 scale-105'
+                : 'bg-white/5 text-matrix-offwhite/40 hover:bg-white/10 border border-white/5'
             }`}
           >
-            📹 Live Stream ({cameras.filter((c) => c.status === 'online').length}/{cameras.length})
+            📹 Live Feed
+            <span className={`px-2 py-0.5 rounded-full text-[8px] ${activeTab === 'cameras' ? 'bg-white/20' : 'bg-white/5'}`}>
+              {cameras.filter((c) => c.status === 'online').length}/{cameras.length}
+            </span>
           </button>
           <button
             onClick={() => setActiveTab('info')}
-            className={`px-6 py-3 rounded-lg font-medium transition ${
+            className={`px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
               activeTab === 'info'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                ? 'bg-matrix-orange text-white shadow-xl shadow-matrix-orange/20 scale-105'
+                : 'bg-white/5 text-matrix-offwhite/40 hover:bg-white/10 border border-white/5'
             }`}
           >
-            ℹ️ Informações
+            ℹ️ Info & VR
           </button>
         </div>
       </div>
@@ -151,25 +158,28 @@ export default function Screen4({ projeto }: Screen4Props) {
 
       {/* Tour 360° */}
       {activeTab === 'tour' && (
-        <div className="space-y-6">
+        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
           {/* Tour Selection */}
-          <div className="bg-gray-900 rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">Tours 360°</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8">
+            <h2 className="text-xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-3">
+              <span className="w-1 h-6 bg-matrix-orange rounded-full" />
+              Tours Disponíveis
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {tours360.map((tour) => (
                 <div
                   key={tour.id}
                   onClick={() => setSelectedTour(tour)}
-                  className={`p-4 rounded-lg cursor-pointer transition transform hover:scale-105 ${
+                  className={`p-6 rounded-2xl cursor-pointer transition-all duration-300 border group relative overflow-hidden ${
                     selectedTour?.id === tour.id
-                      ? 'bg-blue-900 ring-2 ring-blue-500 border-blue-500'
-                      : 'bg-gray-800 hover:bg-gray-700'
+                      ? 'bg-matrix-orange/10 border-matrix-orange shadow-lg shadow-matrix-orange/10'
+                      : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20'
                   }`}
                 >
-                  <div className="text-3xl mb-2">🎥</div>
-                  <h3 className="text-white font-semibold mb-1">{tour.nome}</h3>
-                  <p className="text-gray-400 text-xs mb-2">{tour.provedor}</p>
-                  <p className="text-gray-400 text-sm line-clamp-2">{tour.descricao}</p>
+                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-500">🎥</div>
+                  <h3 className="text-white font-black italic tracking-tight mb-1">{tour.nome}</h3>
+                  <p className="text-matrix-orange font-bold text-[10px] uppercase tracking-widest mb-3">{tour.provedor}</p>
+                  <p className="text-matrix-offwhite/50 text-xs leading-relaxed line-clamp-2">{tour.descricao}</p>
                 </div>
               ))}
             </div>
@@ -177,79 +187,95 @@ export default function Screen4({ projeto }: Screen4Props) {
 
           {/* Tour Viewer */}
           {selectedTour ? (
-            <div className="bg-gray-900 rounded-lg shadow-lg p-6 space-y-4">
+            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 space-y-8">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{selectedTour.nome}</h3>
-                  <p className="text-gray-400">{selectedTour.descricao}</p>
+                  <h3 className="text-3xl font-black text-white italic tracking-tighter mb-2">{selectedTour.nome}</h3>
+                  <p className="text-matrix-offwhite/60 font-medium text-sm">{selectedTour.descricao}</p>
                 </div>
                 <button
                   onClick={() => setSelectedTour(null)}
-                  className="text-gray-400 hover:text-white text-2xl font-bold"
+                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-matrix-offwhite/40 hover:bg-white/10 hover:text-white transition-all group"
                 >
-                  ✕
+                  <span className="text-xl group-hover:rotate-90 transition-transform">✕</span>
                 </button>
               </div>
 
               {/* Viewer */}
-              <div className="w-full h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center relative overflow-hidden">
+              <div className="w-full h-[500px] bg-black rounded-2xl flex items-center justify-center relative overflow-hidden border border-white/5 shadow-inner">
                 {/* Mock 360 Viewer */}
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center opacity-40">
                   <div className="text-center">
-                    <div className="text-6xl mb-4">🎥</div>
-                    <p className="text-gray-400 mb-2">Visualizador 360°</p>
-                    <p className="text-gray-500 text-sm">Integração com {selectedTour.provedor}</p>
+                    <div className="text-8xl mb-6 animate-pulse text-matrix-orange">🎥</div>
+                    <p className="text-matrix-offwhite/60 font-black uppercase tracking-[0.3em] text-sm">Visualizador 360° Ativo</p>
+                    <p className="text-matrix-orange/40 font-bold text-[10px] uppercase tracking-widest mt-2">{selectedTour.provedor} Engine</p>
                   </div>
                 </div>
 
-                {/* Placeholder Info */}
-                <div className="absolute bottom-4 left-4 right-4 bg-black bg-opacity-75 rounded-lg p-3">
-                  <p className="text-gray-300 text-xs">
-                    💡 <strong>Produção:</strong> Implemente iframe com
-                    <code className="bg-gray-800 px-2 py-1 rounded mx-1 text-blue-400">
-                      &lt;iframe src=&quot;{selectedTour.url}&quot; /&gt;
-                    </code>
-                  </p>
+                {/* Hotspot Floating */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-matrix-orange/10 rounded-full border border-matrix-orange/20 animate-ping opacity-20" />
+
+                {/* Placeholder Info Overlay */}
+                <div className="absolute bottom-6 left-6 right-6 bg-matrix-graphite/80 backdrop-blur-xl border border-white/10 rounded-xl p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 bg-matrix-orange rounded-lg flex items-center justify-center font-black text-white text-xs">i</div>
+                    <p className="text-matrix-offwhite/80 text-[10px] font-bold uppercase tracking-widest">
+                      Carregando stream imersiva de alta densidade...
+                    </p>
+                  </div>
+                  <button className="bg-matrix-orange text-white px-4 py-2 rounded-lg font-black uppercase tracking-widest text-[9px] hover:scale-105 transition-transform">
+                    Expandir Tour
+                  </button>
                 </div>
               </div>
 
               {/* Controls */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
-                  🔍 Zoom
-                </button>
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
-                  ↻ Rotacionar
-                </button>
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
-                  🎮 VR
-                </button>
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
-                  ⛶ Fullscreen
-                </button>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: 'Procurar', icon: '🔍' },
+                  { label: 'Girar', icon: '↻' },
+                  { label: 'Habilitar VR', icon: '🥽' },
+                  { label: 'Tela Cheia', icon: '⛶' }
+                ].map((ctrl) => (
+                  <button key={ctrl.label} className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] py-4 rounded-xl transition-all flex items-center justify-center gap-3">
+                    <span className="text-lg opacity-60">{ctrl.icon}</span>
+                    {ctrl.label}
+                  </button>
+                ))}
               </div>
 
-              {/* Hotspots */}
-              <div className="bg-gray-800 rounded-lg p-4">
-                <h4 className="text-white font-semibold mb-3">Pontos de Interesse 📍</h4>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
+              {/* Hotspots Panel */}
+              <div className="bg-white/5 border border-white/5 rounded-2xl p-6">
+                <h4 className="text-white font-black italic uppercase tracking-tight mb-6 flex items-center gap-3">
+                  <span className="w-1.5 h-1.5 bg-matrix-orange rounded-full" />
+                  Pontos de Interesse Identificados 📍
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
-                    { name: 'BOS Central', desc: 'Battery Energy Storage System' },
-                    { name: 'Transformador', desc: '4 unidades de 630 kVA' },
-                    { name: 'Painel de Controle', desc: 'SCADA e Proteção' },
-                    { name: 'Infraestrutura Elétrica', desc: 'Conexão 13,8 kV' },
+                    { name: 'BOS Central', desc: 'Sistemas de Armazenamento de Energia em Bateria' },
+                    { name: 'Transformador 01-04', desc: 'Unidades Críticas de Conversão de Potência' },
+                    { name: 'SCADA Panel', desc: 'Central de Monitoramento e Proteção' },
+                    { name: 'Grip de Conexão', desc: 'Interface de Rede 13,8 kV' },
                   ].map((spot, idx) => (
-                    <div key={idx} className="text-sm">
-                      <span className="text-blue-400 font-medium">{spot.name}:</span>
-                      <span className="text-gray-400"> {spot.desc}</span>
+                    <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-start gap-3 group">
+                      <div className="w-8 h-8 bg-matrix-orange/10 rounded-lg flex items-center justify-center group-hover:bg-matrix-orange transition-colors">
+                        <span className="text-matrix-orange text-xs group-hover:text-white">📍</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-bold text-sm tracking-tight">{spot.name}</p>
+                        <p className="text-matrix-offwhite/40 text-[10px] font-medium uppercase tracking-widest">{spot.desc}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
           ) : (
-            <div className="bg-gray-900 rounded-lg shadow-lg p-12 text-center">
-              <p className="text-gray-400">Selecione um tour para visualizar</p>
+            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-lg p-24 text-center group">
+              <div className="text-7xl mb-6 opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700">📽️</div>
+              <p className="text-matrix-offwhite/40 font-black uppercase tracking-[0.2em] text-xs">
+                Selecione um tour dinâmico para carregar a visualização
+              </p>
             </div>
           )}
         </div>
@@ -257,9 +283,9 @@ export default function Screen4({ projeto }: Screen4Props) {
 
       {/* Live Stream */}
       {activeTab === 'cameras' && (
-        <div className="space-y-6">
+        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
           {/* Camera Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {cameras.map((camera) => {
               const statusColor = getStatusColor(camera.status);
               const isSelected = selectedCamera?.id === camera.id;
@@ -268,49 +294,58 @@ export default function Screen4({ projeto }: Screen4Props) {
                 <div
                   key={camera.id}
                   onClick={() => setSelectedCamera(camera)}
-                  className={`rounded-lg overflow-hidden shadow-lg cursor-pointer transition transform hover:scale-105 ${
-                    isSelected ? 'ring-2 ring-blue-500' : ''
+                  className={`rounded-2xl overflow-hidden shadow-2xl cursor-pointer transition-all duration-500 border ${
+                    isSelected ? 'ring-2 ring-matrix-orange border-matrix-orange' : 'border-white/10 hover:border-white/30'
                   }`}
                 >
-                  {/* Video Feed */}
-                  <div className="relative w-full h-48 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">📹</div>
-                      <p className="text-gray-400 text-sm">{camera.nome}</p>
+                  {/* Video Feed Placeholder */}
+                  <div className="relative w-full h-64 bg-black group overflow-hidden">
+                    <div className="absolute inset-0 bg-matrix-graphite flex items-center justify-center group-hover:scale-110 transition-transform duration-1000">
+                      <div className="text-center opacity-40 group-hover:opacity-100 transition-opacity">
+                        <div className="text-6xl mb-2 text-matrix-orange">📹</div>
+                        <p className="text-matrix-offwhite font-black uppercase tracking-widest text-[10px]">{camera.nome}</p>
+                      </div>
                     </div>
 
                     {/* Status Badge */}
                     <div
-                      className={`absolute top-3 right-3 ${statusColor.bg} ${statusColor.text} px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1`}
+                      className={`absolute top-4 right-4 ${statusColor.bg} ${statusColor.text} px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 backdrop-blur-md border border-white/10`}
                     >
-                      <span className="w-2 h-2 rounded-full animate-pulse bg-current" />
+                      <span className={`w-2 h-2 rounded-full ${camera.status === 'online' ? 'animate-pulse' : ''} bg-current`} />
                       {statusColor.label}
                     </div>
                   </div>
 
                   {/* Info */}
-                  <div className="bg-gray-800 p-4">
-                    <h3 className="text-white font-semibold mb-2">{camera.nome}</h3>
-                    <p className="text-gray-400 text-sm mb-3">📍 {camera.locacao}</p>
+                  <div className="bg-matrix-graphite p-6 border-t border-white/5">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-white font-black italic tracking-tight text-lg mb-1">{camera.nome}</h3>
+                        <p className="text-matrix-offwhite/40 font-bold text-[10px] uppercase tracking-[0.2em]">📍 {camera.locacao}</p>
+                      </div>
+                    </div>
 
                     {camera.latitude && camera.longitude && (
-                      <p className="text-gray-500 text-xs mb-3">
-                        📌 {camera.latitude.toFixed(4)}, {camera.longitude.toFixed(4)}
-                      </p>
+                      <div className="flex items-center gap-2 mb-6">
+                        <span className="w-1 h-1 bg-matrix-orange rounded-full" />
+                        <p className="text-matrix-offwhite/20 font-black text-[9px] uppercase tracking-widest">
+                          GEOREF: {camera.latitude.toFixed(4)}N / {camera.longitude.toFixed(4)}W
+                        </p>
+                      </div>
                     )}
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-4">
                       <button
                         disabled={camera.status === 'offline'}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-3 py-2 rounded text-xs font-medium transition"
+                        className="flex-1 bg-white/5 border border-white/10 hover:bg-matrix-orange hover:border-matrix-orange hover:text-white disabled:opacity-20 disabled:cursor-not-allowed text-matrix-offwhite/60 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
                       >
-                        Visualizar
+                        Ativar Stream
                       </button>
                       <button
                         disabled={!camera.latitude}
-                        className="flex-1 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-3 py-2 rounded text-xs font-medium transition"
+                        className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed text-matrix-offwhite/60 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
                       >
-                        Mapa
+                        Deep Map
                       </button>
                     </div>
                   </div>
@@ -319,76 +354,82 @@ export default function Screen4({ projeto }: Screen4Props) {
             })}
           </div>
 
-          {/* Camera Details */}
+          {/* Camera Details / Full View */}
           {selectedCamera && (
-            <div className="bg-gray-900 rounded-lg shadow-lg p-6 space-y-4">
+            <div className="bg-matrix-graphite border border-white/20 rounded-2xl shadow-2xl p-8 space-y-8 animate-in zoom-in-95 duration-500">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">{selectedCamera.nome}</h3>
-                  <p className="text-gray-400">📍 {selectedCamera.locacao}</p>
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">{selectedCamera.nome}</h3>
+                    <span className="px-3 py-1 bg-matrix-orange/20 text-matrix-orange rounded-lg font-black text-[10px] uppercase">Master View</span>
+                  </div>
+                  <p className="text-matrix-offwhite/60 font-bold text-xs uppercase tracking-widest leading-relaxed">Localização Estratégica: {selectedCamera.locacao}</p>
                 </div>
                 <button
                   onClick={() => setSelectedCamera(null)}
-                  className="text-gray-400 hover:text-white text-2xl font-bold"
+                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-matrix-offwhite/40 hover:bg-white/10 hover:text-white transition-all"
                 >
-                  ✕
+                  <span className="text-xl">✕</span>
                 </button>
               </div>
 
               {/* Live Viewer */}
-              <div className="w-full h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center relative">
-                <div className="text-center">
-                  <div className="text-6xl mb-4">📹</div>
-                  <p className="text-gray-400 mb-2">Live Stream</p>
-                  <p className="text-gray-500 text-sm">{selectedCamera.status === 'online' ? '● Transmitindo ao vivo' : '⚫ Câmera desconectada'}</p>
+              <div className="w-full h-[600px] bg-black rounded-2xl flex items-center justify-center relative border border-white/10 overflow-hidden group">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-matrix-orange/5 via-transparent to-transparent opacity-50" />
+                
+                <div className="text-center group-hover:scale-110 transition-transform duration-1000 z-10">
+                  <div className="text-9xl mb-6 text-matrix-orange opacity-20">📹</div>
+                  <p className="text-matrix-offwhite/60 font-black uppercase tracking-[0.5em] text-sm">Transmissão Direta</p>
+                  <p className="text-matrix-offwhite/20 font-bold text-[10px] uppercase tracking-widest mt-4">
+                    {selectedCamera.status === 'online' ? 'Status: Fluxo de Dados Sincronizado' : 'Status: Conexão Interrompida'}
+                  </p>
                 </div>
 
                 {selectedCamera.status === 'online' && (
-                  <div className="absolute top-4 right-4 flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full animate-pulse bg-red-500" />
-                    <span className="text-red-400 text-sm font-semibold">LIVE</span>
+                  <div className="absolute top-8 right-8 flex items-center gap-4 bg-black/40 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10">
+                    <span className="w-2.5 h-2.5 rounded-full animate-pulse bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
+                    <span className="text-white text-xs font-black uppercase tracking-[0.2em]">Live Operating</span>
                   </div>
                 )}
+                
+                <div className="absolute bottom-8 left-8 flex items-center gap-8">
+                   <div className="text-[10px] font-black text-white/40 uppercase bg-black/40 px-4 py-2 rounded-lg border border-white/5">BITRATE: 4.8MBPS</div>
+                   <div className="text-[10px] font-black text-white/40 uppercase bg-black/40 px-4 py-2 rounded-lg border border-white/5">ENC: H.265</div>
+                   <div className="text-[10px] font-black text-matrix-orange uppercase bg-black/40 px-4 py-2 rounded-lg border border-white/10 animate-pulse">REC ●</div>
+                </div>
               </div>
 
-              {/* Camera Info */}
+              {/* Camera Metadata */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                  { label: 'Status Operacional', val: getStatusColor(selectedCamera.status).label, highlight: true },
+                  { label: 'Macro Região', val: selectedCamera.locacao, highlight: false },
+                  { label: 'Latitude Coord', val: selectedCamera.latitude?.toFixed(4) || 'N/A', highlight: false },
+                  { label: 'Longitude Coord', val: selectedCamera.longitude?.toFixed(4) || 'N/A', highlight: false }
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-white/5 border border-white/5 rounded-2xl p-6">
+                    <p className="text-matrix-offwhite/30 text-[9px] font-black uppercase tracking-widest mb-2">{item.label}</p>
+                    <p className={`text-white font-black italic tracking-tight ${item.highlight ? 'text-matrix-orange' : ''}`}>{item.val}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* PTZ Controls */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-gray-800 rounded-lg p-4">
-                  <p className="text-gray-400 text-xs uppercase">Status</p>
-                  <p className="text-white font-semibold mt-1">{getStatusColor(selectedCamera.status).label}</p>
-                </div>
-                <div className="bg-gray-800 rounded-lg p-4">
-                  <p className="text-gray-400 text-xs uppercase">Localização</p>
-                  <p className="text-white font-semibold mt-1 text-sm">{selectedCamera.locacao}</p>
-                </div>
-                {selectedCamera.latitude && (
-                  <>
-                    <div className="bg-gray-800 rounded-lg p-4">
-                      <p className="text-gray-400 text-xs uppercase">Latitude</p>
-                      <p className="text-white font-semibold mt-1 text-sm">{selectedCamera.latitude?.toFixed(4)}</p>
-                    </div>
-                    <div className="bg-gray-800 rounded-lg p-4">
-                      <p className="text-gray-400 text-xs uppercase">Longitude</p>
-                      <p className="text-white font-semibold mt-1 text-sm">{selectedCamera.longitude?.toFixed(4)}</p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* Controls */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition disabled:opacity-50" disabled={selectedCamera.status === 'offline'}>
-                  ↑ Pan Up
-                </button>
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition disabled:opacity-50" disabled={selectedCamera.status === 'offline'}>
-                  ↓ Pan Down
-                </button>
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition disabled:opacity-50" disabled={selectedCamera.status === 'offline'}>
-                  🔍 Zoom +
-                </button>
-                <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition disabled:opacity-50" disabled={selectedCamera.status === 'offline'}>
-                  🔍 Zoom -
-                </button>
+                {[
+                  { label: 'PAN UP', action: '↑' },
+                  { label: 'PAN DOWN', action: '↓' },
+                  { label: 'ZOOM IN', action: '🔍+' },
+                  { label: 'ZOOM OUT', action: '🔍-' }
+                ].map((ctrl) => (
+                  <button
+                    key={ctrl.label}
+                    disabled={selectedCamera.status === 'offline'}
+                    className="bg-white/5 border border-white/10 hover:bg-matrix-orange hover:text-white text-matrix-offwhite/60 font-black uppercase tracking-widest text-[10px] py-4 rounded-xl transition-all disabled:opacity-10"
+                  >
+                    {ctrl.label}
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -397,109 +438,80 @@ export default function Screen4({ projeto }: Screen4Props) {
 
       {/* Info & VR */}
       {activeTab === 'info' && (
-        <div className="space-y-6">
-          {/* VR Support */}
-          <div className="bg-purple-900 bg-opacity-30 border-l-4 border-purple-500 rounded-lg p-6">
-            <h3 className="text-2xl font-bold text-purple-400 mb-4">🥽 Suporte para Realidade Virtual</h3>
-            <div className="space-y-3 text-gray-300">
-              <p>✅ <strong>Compatibilidade:</strong> Tours 360° funcionam com Meta Quest, HTC Vive e Google Cardboard</p>
-              <p>✅ <strong>Navegação:</strong> Controle intuitivo via joystick ou hand tracking</p>
-              <p>✅ <strong>Imersão:</strong> Visualização em 360° com áudio espacial</p>
-              <p>✅ <strong>Hotspots:</strong> Clique em pontos de interesse para mais informações</p>
-            </div>
-          </div>
-
-          {/* Project Info */}
-          <div className="bg-gray-900 rounded-lg shadow-lg p-6">
-            <h3 className="text-2xl font-bold text-white mb-4">📊 Informações do Projeto</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Projeto</p>
-                  <p className="text-white font-semibold">{projeto}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Coordenadas</p>
-                  <p className="text-white font-semibold">-25.4285, -49.2734</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Altitude</p>
-                  <p className="text-white font-semibold">820m</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Área Total</p>
-                  <p className="text-white font-semibold">2.500 m²</p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Câmeras Ativas</p>
-                  <p className="text-green-400 font-semibold text-lg">
-                    {cameras.filter((c) => c.status === 'online').length}/{cameras.length}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Tours Disponíveis</p>
-                  <p className="text-blue-400 font-semibold text-lg">{tours360.length}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Última Atualização</p>
-                  <p className="text-white font-semibold">19/03/2026 16:30</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-xs uppercase">Próxima Atualização</p>
-                  <p className="text-white font-semibold">Em tempo real</p>
+        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+          {/* VR Support Header */}
+          <div className="bg-matrix-orange border border-matrix-orange/20 rounded-2xl p-10 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.2),_transparent)] opacity-50" />
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+              <div className="text-8xl group-hover:rotate-12 transition-transform duration-700">🥽</div>
+              <div>
+                <h3 className="text-4xl font-black text-white italic uppercase tracking-tighter mb-4">Imersão VR Nativa</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+                  {[
+                    'Compatibilidade Meta/Oculus',
+                    'Aceleração WebXR Sincronizada',
+                    'Audio Espacial 3D Ativo',
+                    'Hand Tracking Habilitado'
+                  ].map((feat) => (
+                    <div key={feat} className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                      <p className="text-white font-bold uppercase tracking-widest text-[10px]">{feat}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Integrations */}
-          <div className="bg-gray-900 rounded-lg shadow-lg p-6">
-            <h3 className="text-2xl font-bold text-white mb-4">🔗 Integrações Disponíveis</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-800 rounded-lg p-4">
-                <p className="text-white font-semibold mb-2">🎥 Acompanha360</p>
-                <p className="text-gray-400 text-sm mb-3">Tours 360° imersivos com pontos de interesse</p>
-                <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                  Conectar →
-                </button>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Project Specs */}
+            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8">
+              <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-8 shadow-sm">Especificações Técnicas</h3>
+              <div className="space-y-6">
+                {[
+                  { label: 'Código Projeto', val: projeto },
+                  { label: 'Sistema GEO', val: 'WGS84 / EPSG:4326' },
+                  { label: 'Altímetria Média', val: '842m ASL' },
+                  { label: 'Footprint Área', val: '2.500 m² Operacional' }
+                ].map((spec) => (
+                  <div key={spec.label} className="flex justify-between items-end border-b border-white/5 pb-2">
+                    <p className="text-matrix-offwhite/30 font-black uppercase tracking-widest text-[9px]">{spec.label}</p>
+                    <p className="text-white font-black italic tracking-tight">{spec.val}</p>
+                  </div>
+                ))}
               </div>
+            </div>
 
-              <div className="bg-gray-800 rounded-lg p-4">
-                <p className="text-white font-semibold mb-2">📹 RTSP/HLS Streaming</p>
-                <p className="text-gray-400 text-sm mb-3">Câmeras ao vivo via protocolo RTSP ou HLS</p>
-                <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                  Conectar →
-                </button>
-              </div>
-
-              <div className="bg-gray-800 rounded-lg p-4">
-                <p className="text-white font-semibold mb-2">🗺️ Google Maps</p>
-                <p className="text-gray-400 text-sm mb-3">Mapa interativo com localização de câmeras</p>
-                <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                  Conectar →
-                </button>
-              </div>
-
-              <div className="bg-gray-800 rounded-lg p-4">
-                <p className="text-white font-semibold mb-2">🥽 WebXR</p>
-                <p className="text-gray-400 text-sm mb-3">Suporte nativo para VR/AR via navegador</p>
-                <button className="text-blue-400 hover:text-blue-300 text-sm font-medium">
-                  Conectar →
-                </button>
+            {/* Integrations */}
+            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8">
+              <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-8">Conectividade & API</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { name: 'Acompanha360', status: 'Sincronizado' },
+                  { name: 'RTSP Hyper', status: 'Ativo' },
+                  { name: 'MAPS Engine', status: 'Conectado' },
+                  { name: 'DeepXR', status: 'Habilitado' }
+                ].map((conn) => (
+                  <div key={conn.name} className="bg-white/5 border border-white/5 p-4 rounded-xl hover:border-matrix-orange/30 transition-all cursor-pointer">
+                    <p className="text-white font-black text-xs italic mb-1">{conn.name}</p>
+                    <p className="text-matrix-orange font-bold text-[8px] uppercase tracking-widest">{conn.status}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Keyboard Shortcuts */}
-          <div className="bg-blue-900 bg-opacity-30 border-l-4 border-blue-500 rounded-lg p-4">
-            <p className="text-blue-300 text-sm">
-              💡 <strong>Dica:</strong> Use <kbd className="bg-blue-800 px-2 py-1 rounded text-xs">F</kbd> para fullscreen,
-              <kbd className="bg-blue-800 px-2 py-1 rounded text-xs ml-1">V</kbd> para VR, ou
-              <kbd className="bg-blue-800 px-2 py-1 rounded text-xs ml-1">Espaço</kbd> para pausar
-            </p>
+          {/* Keyboard Protocol */}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-wrap items-center justify-center gap-8 backdrop-blur-md">
+            <p className="text-matrix-offwhite/40 font-black uppercase tracking-[0.2em] text-[10px]">Protocolo de Comando:</p>
+            <div className="flex gap-4">
+               {['F: Fullscreen', 'V: VR Mode', 'SPACE: Pause'].map(key => (
+                 <div key={key} className="flex items-center gap-2">
+                   <div className="w-1 h-1 bg-matrix-orange rounded-full" />
+                   <span className="text-white font-bold text-[9px] uppercase tracking-widest">{key}</span>
+                 </div>
+               ))}
+            </div>
           </div>
         </div>
       )}

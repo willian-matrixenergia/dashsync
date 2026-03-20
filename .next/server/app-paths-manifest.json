@@ -1,0 +1,15 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/activities/[projeto]/gantt/route": "app/api/activities/[projeto]/gantt/route.js",
+  "/api/activities/route": "app/api/activities/route.js",
+  "/api/activities/[projeto]/speedometer/route": "app/api/activities/[projeto]/speedometer/route.js",
+  "/api/portfolio/[projeto]/route": "app/api/portfolio/[projeto]/route.js",
+  "/api/evolution/[projeto]/curva-s/route": "app/api/evolution/[projeto]/curva-s/route.js",
+  "/api/evolution/route": "app/api/evolution/route.js",
+  "/api/evolution/[projeto]/mod/route": "app/api/evolution/[projeto]/mod/route.js",
+  "/api/specs/[projeto]/route": "app/api/specs/[projeto]/route.js",
+  "/api/portfolio/route": "app/api/portfolio/route.js",
+  "/api/portfolio/stats/summary/route": "app/api/portfolio/stats/summary/route.js",
+  "/api/specs/route": "app/api/specs/route.js",
+  "/page": "app/page.js"
+}

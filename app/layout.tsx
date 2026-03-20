@@ -1,5 +1,12 @@
 import type { Metadata } from 'next';
+import { Lexend } from 'next/font/google';
 import './globals.css';
+
+const lexend = Lexend({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-lexend',
+});
 
 export const metadata: Metadata = {
   title: 'DashSync',
@@ -12,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR">
-      <body>{children}</body>
+    <html lang="pt-BR" className={lexend.variable}>
+      <body className="font-sans">{children}</body>
     </html>
   );
 }

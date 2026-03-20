@@ -45,29 +45,44 @@ export default function Screen3({ projeto }: Screen3Props) {
   }, [mediaItems, selectedImage]);
 
   return (
-    <div className="space-y-6">
-      <div className="bg-gray-900 rounded-lg shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Tela 03: Galeria de Mídia</h1>
-        <p className="text-gray-400">Fotos de suprimentos, obras e aéreas do projeto {projeto}</p>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* Header */}
+      <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-matrix-orange/10 blur-[100px] rounded-full -mr-32 -mt-32 group-hover:bg-matrix-orange/20 transition-all duration-1000" />
+        <h1 className="text-4xl font-black text-white mb-2 italic tracking-tighter">Tela 03: Galeria de Mídia</h1>
+        <p className="text-matrix-offwhite/60 font-medium uppercase tracking-widest text-xs flex items-center gap-2">
+          <span className="w-2 h-2 bg-matrix-orange rounded-full animate-pulse" />
+          Registros visuais do projeto {projeto}
+        </p>
       </div>
 
-      <MediaUpload projeto={projeto} onUpload={handleUpload} loading={loading} />
+      <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-xl overflow-hidden">
+        <MediaUpload projeto={projeto} onUpload={handleUpload} loading={loading} />
+      </div>
 
-      <div className="bg-gray-900 rounded-lg shadow-lg p-4">
-        <div className="flex flex-wrap gap-2">
-          {['Todas', 'Suprimentos', 'Obras', 'Aéreas'].map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat as any)}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
-                selectedCategory === cat
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              }`}
-            >
-              {cat} ({cat === 'Todas' ? mediaItems.length : mediaItems.filter((m) => m.categoria === cat).length})
-            </button>
-          ))}
+      <div className="bg-white/5 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
+        <div className="flex flex-wrap gap-3">
+          {['Todas', 'Suprimentos', 'Obras', 'Aéreas'].map((cat) => {
+            const isActive = selectedCategory === cat;
+            const count = cat === 'Todas' ? mediaItems.length : mediaItems.filter((m) => m.categoria === cat).length;
+            
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat as any)}
+                className={`px-6 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
+                  isActive
+                    ? 'bg-matrix-orange text-white shadow-lg shadow-matrix-orange/20 scale-105'
+                    : 'bg-white/5 text-matrix-offwhite/60 hover:bg-white/10 border border-white/5'
+                }`}
+              >
+                {cat}
+                <span className={`px-2 py-0.5 rounded-full text-[8px] ${isActive ? 'bg-white/20 text-white' : 'bg-white/10 text-matrix-offwhite/40'}`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -88,29 +103,32 @@ export default function Screen3({ projeto }: Screen3Props) {
       )}
 
       {mediaItems.length === 0 && (
-        <div className="bg-gray-900 rounded-lg shadow-lg p-12 text-center">
-          <div className="text-6xl mb-4">📸</div>
-          <p className="text-gray-400">Nenhuma imagem ainda. Use o formulário acima para fazer upload.</p>
+        <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-lg p-20 text-center group">
+          <div className="text-7xl mb-6 grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110">📸</div>
+          <p className="text-matrix-offwhite/40 font-bold uppercase tracking-widest text-xs leading-relaxed">
+            Nenhuma evidência visual registrada.<br />
+            Utilize o módulo de upload acima para iniciar.
+          </p>
         </div>
       )}
 
       {mediaItems.length > 0 && (
-        <div className="bg-gray-900 rounded-lg shadow-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Estatísticas</h3>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="bg-gray-800 rounded-lg p-4">
-              <p className="text-sm text-gray-400 uppercase">Total de Fotos</p>
-              <p className="text-3xl font-bold text-white mt-2">{mediaItems.length}</p>
+        <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 hover:border-white/20 transition-all">
+          <h2 className="text-xl font-black text-white uppercase tracking-tighter italic mb-8">Resumo da Galeria</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white/5 border border-white/5 rounded-xl p-6 hover:bg-white/[0.08] transition-all">
+              <p className="text-[10px] font-bold text-matrix-offwhite/40 uppercase tracking-widest mb-2">Total de Arquivos</p>
+              <p className="text-4xl font-black text-white italic">{mediaItems.length}</p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <p className="text-sm text-gray-400 uppercase">Suprimentos</p>
-              <p className="text-3xl font-bold text-blue-400 mt-2">
+            <div className="bg-white/5 border border-white/5 rounded-xl p-6 hover:bg-white/[0.08] transition-all">
+              <p className="text-[10px] font-bold text-matrix-offwhite/40 uppercase tracking-widest mb-2">Suprimentos</p>
+              <p className="text-4xl font-black text-white italic opacity-40">
                 {mediaItems.filter((m) => m.categoria === 'Suprimentos').length}
               </p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <p className="text-sm text-gray-400 uppercase">Obras/Aéreas</p>
-              <p className="text-3xl font-bold text-green-400 mt-2">
+            <div className="bg-matrix-orange/5 border border-matrix-orange/10 rounded-xl p-6 hover:bg-matrix-orange/10 transition-all">
+              <p className="text-[10px] font-bold text-matrix-orange/60 uppercase tracking-widest mb-2">Obras & Aéreas</p>
+              <p className="text-4xl font-black text-matrix-orange italic">
                 {mediaItems.filter((m) => m.categoria !== 'Suprimentos').length}
               </p>
             </div>

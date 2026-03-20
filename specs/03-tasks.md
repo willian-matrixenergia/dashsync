@@ -1,0 +1,4 @@
+- [x] Passo 1: Criar arquivo `docs/brand/manual-da-marca.md`
+- [x] Passo 2: Atualizar `.agent/agents/product-design.md` com seção de Brand Compliance
+- [x] Passo 3: Adicionar tokens de cor e tipografia Lexend às instruções do agente
+- [x] Passo 4: Verificação final de alinhamento

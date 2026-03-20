@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: system-ui, -apple-system, sans-serif;
+@layer base {
+  body {
+    @apply bg-matrix-graphite text-matrix-offwhite;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
 }

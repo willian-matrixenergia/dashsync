@@ -33,161 +33,112 @@ export default function Dashboard({ project, onClose }: DashboardProps) {
   };
 
   return (
-    <div className="bg-gray-900 rounded-lg shadow-lg p-6 space-y-6">
+    <div className="bg-matrix-graphite rounded-2xl border border-white/10 shadow-2xl p-8 space-y-8 animate-in fade-in zoom-in duration-500">
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start border-b border-white/5 pb-6">
         <div>
-          <h2 className="text-3xl font-bold text-white mb-2">{project.projeto}</h2>
-          <p className="text-gray-400">{project.programa}</p>
+          <h2 className="text-4xl font-black text-white mb-2 tracking-tight">{project.projeto}</h2>
+          <p className="text-matrix-orange font-bold uppercase tracking-widest text-xs">{project.programa}</p>
         </div>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-white text-2xl font-bold"
+          className="text-white/40 hover:text-matrix-orange text-2xl p-2 transition-colors"
         >
           ✕
         </button>
       </div>
 
       {/* Key Info Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        <div className="bg-gray-800 rounded-lg p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase">Potência</p>
-          <p className="text-2xl font-bold text-white mt-1">{project.potencia_mw} MW</p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase">Fase</p>
-          <p className="text-2xl font-bold text-white mt-1">{project.fase || '—'}</p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase">Localidade</p>
-          <p className="text-2xl font-bold text-white mt-1">{project.localidade || '—'}</p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase">Avanço Físico</p>
-          <p className="text-2xl font-bold text-green-400 mt-1">
-            {project.avanco_fisico_real?.toFixed(1) || '—'}%
-          </p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase">Avanço Financeiro</p>
-          <p className="text-2xl font-bold text-blue-400 mt-1">
-            {project.avanco_financeiro_real?.toFixed(1) || '—'}%
-          </p>
-        </div>
-
-        <div className="bg-gray-800 rounded-lg p-4">
-          <p className="text-xs font-semibold text-gray-400 uppercase">Criticidade</p>
-          <p className="text-2xl font-bold text-orange-400 mt-1">
-            {project.criticidade_risco || '—'}
-          </p>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+        {[
+          { label: 'Potência', value: `${project.potencia_mw} MW`, icon: '⚡' },
+          { label: 'Fase', value: project.fase || '—', icon: '📍' },
+          { label: 'Localidade', value: project.localidade || '—', icon: '🗺️' },
+          { label: 'Avanço Físico', value: `${project.avanco_fisico_real?.toFixed(1) || '—'}%`, color: 'text-matrix-orange' },
+          { label: 'Avanço Financeiro', value: `${project.avanco_financeiro_real?.toFixed(1) || '—'}%`, color: 'text-white' },
+          { label: 'Criticidade', value: project.criticidade_risco || '—', color: project.criticidade_risco === 'Alta' ? 'text-matrix-orange' : 'text-white' },
+        ].map((item, i) => (
+          <div key={i} className="bg-white/5 border border-white/5 rounded-xl p-5 hover:bg-white/[0.08] transition-all group">
+            <p className="text-[10px] font-bold text-matrix-offwhite/40 uppercase tracking-widest mb-1">{item.label}</p>
+            <p className={`text-2xl font-black ${item.color || 'text-white'} flex items-center gap-2 italic`}>
+              {item.value}
+            </p>
+          </div>
+        ))}
       </div>
 
-      {/* Dates */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <h3 className="text-lg font-semibold text-white mb-4">Prazos</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Início</p>
-            <p className="text-white font-medium">{formatDate(project.inicio)}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Término Previsto</p>
-            <p className="text-white font-medium">{formatDate(project.termino)}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase">COD Tendência</p>
-            <p className="text-white font-medium">{formatDate(project.cod_tendencia)}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Team */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <h3 className="text-lg font-semibold text-white mb-4">Equipe</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Coordenador</p>
-            <p className="text-white">{project.coordenador || '—'}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Supervisor</p>
-            <p className="text-white">{project.supervisor || '—'}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Empreiteiros</p>
-            <p className="text-white text-xl font-bold">{project.num_empreiteiros || 0}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Profissionais</p>
-            <p className="text-white text-xl font-bold">{project.num_profissionais || 0}</p>
+      {/* Grid for Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Prazos */}
+        <div className="bg-white/5 border border-white/5 rounded-xl p-6">
+          <h3 className="text-sm font-bold text-matrix-orange uppercase tracking-widest mb-6 border-b border-white/5 pb-2">Prazos & Cronograma</h3>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <p className="text-xs text-matrix-offwhite/60 uppercase font-bold">Início</p>
+              <p className="text-white font-mono">{formatDate(project.inicio)}</p>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-xs text-matrix-offwhite/60 uppercase font-bold">Término Previsto</p>
+              <p className="text-white font-mono">{formatDate(project.termino)}</p>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-xs text-matrix-orange uppercase font-bold">COD Tendência</p>
+              <p className="text-matrix-orange font-mono font-bold">{formatDate(project.cod_tendencia)}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* MOD */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <h3 className="text-lg font-semibold text-white mb-4">Mão de Obra (MOD)</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Prevista</p>
-            <p className="text-2xl font-bold text-white">{project.mod_prevista || 0}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Real</p>
-            <p className="text-2xl font-bold text-white">{project.mod_real || 0}</p>
+        {/* Equipe */}
+        <div className="bg-white/5 border border-white/5 rounded-xl p-6">
+          <h3 className="text-sm font-bold text-matrix-orange uppercase tracking-widest mb-6 border-b border-white/5 pb-2">Equipe de Gestão</h3>
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <p className="text-[10px] text-matrix-offwhite/40 uppercase font-bold mb-1">Coordenador</p>
+              <p className="text-white text-sm font-semibold">{project.coordenador || '—'}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-matrix-offwhite/40 uppercase font-bold mb-1">Supervisor</p>
+              <p className="text-white text-sm font-semibold">{project.supervisor || '—'}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-matrix-offwhite/40 uppercase font-bold mb-1">Empreiteiros</p>
+              <p className="text-white text-2xl font-black italic">{project.num_empreiteiros || 0}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-matrix-offwhite/40 uppercase font-bold mb-1">Profissionais</p>
+              <p className="text-white text-2xl font-black italic">{project.num_profissionais || 0}</p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Risks */}
       {project.tem_risco_relevante && (
-        <div className="bg-red-900 bg-opacity-30 border-l-4 border-red-500 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-red-400 mb-2">Alertas de Risco</h3>
-          <p className="text-gray-300 text-sm">{project.descricao_riscos || 'Sem descrição'}</p>
-          <p className="text-gray-400 text-sm mt-2">{project.resumo_atraso || ''}</p>
-        </div>
-      )}
-
-      {/* Technical Specs */}
-      {specs && (
-        <div className="bg-gray-800 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-white mb-4">Especificações Técnicas</h3>
-          <div className="space-y-4">
-            {specs.caracteristicas_macro && (
-              <div>
-                <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Macro</p>
-                <p className="text-gray-300 text-sm">{specs.caracteristicas_macro}</p>
-              </div>
-            )}
-            {specs.caracteristicas_detalhadas && (
-              <div>
-                <p className="text-xs text-gray-400 uppercase font-semibold mb-1">Detalhadas</p>
-                <p className="text-gray-300 text-sm">{specs.caracteristicas_detalhadas}</p>
-              </div>
-            )}
+        <div className="bg-matrix-orange/10 border-l-4 border-matrix-orange rounded-r-xl p-6 animate-pulse">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-2xl">⚠️</span>
+            <h3 className="text-lg font-black text-matrix-orange uppercase tracking-widest italic">Alertas Críticos</h3>
           </div>
-        </div>
-      )}
-
-      {/* Customer */}
-      <div className="bg-gray-800 rounded-lg p-4">
-        <h3 className="text-lg font-semibold text-white mb-4">Cliente</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs text-gray-400 uppercase">Nome</p>
-            <p className="text-white">{project.nome_cliente || '—'}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-400 uppercase">% Chamados Atendidos</p>
-            <p className="text-white font-bold">
-              {project.pct_chamados_atendidos?.toFixed(1) || '—'}%
+          <p className="text-matrix-offwhite/80 text-sm leading-relaxed">{project.descricao_riscos || 'Sem descrição'}</p>
+          {project.resumo_atraso && (
+            <p className="text-white/60 text-xs mt-3 font-medium border-t border-white/5 pt-3 uppercase tracking-tighter">
+              {project.resumo_atraso}
             </p>
-          </div>
+          )}
+        </div>
+      )}
+
+      {/* Footer / Client */}
+      <div className="flex justify-between items-center bg-white/5 rounded-xl p-6 border border-white/5">
+        <div>
+          <p className="text-[10px] text-matrix-offwhite/40 uppercase font-bold mb-1">Cliente / Parceiro</p>
+          <p className="text-white font-black text-xl italic">{project.nome_cliente || '—'}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] text-matrix-offwhite/40 uppercase font-bold mb-1">SLA de Atendimento</p>
+          <p className="text-matrix-orange font-black text-2xl italic">
+            {project.pct_chamados_atendidos?.toFixed(1) || '—'}%
+          </p>
         </div>
       </div>
     </div>

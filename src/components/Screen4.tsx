@@ -1,520 +1,183 @@
-import { useState } from 'react';
+import { PortfolioMaster } from '../types';
+import { useState, useEffect } from 'react';
 
 interface Screen4Props {
-  projeto: string;
+  selectedProject: PortfolioMaster | null;
 }
 
-interface Camera {
-  id: string;
-  nome: string;
-  locacao: string;
-  status: 'online' | 'offline' | 'standby';
-  url?: string;
-  latitude?: number;
-  longitude?: number;
-}
+export default function Screen4({ selectedProject }: Screen4Props) {
+  const [logs, setLogs] = useState([
+    { id: 1, time: '14:22:05', type: 'info', msg: 'System check: All sensors nominal' },
+    { id: 2, time: '14:20:12', type: 'warning', msg: 'Inverter #4 reporting high temperature' },
+    { id: 3, time: '14:15:30', type: 'info', msg: 'Manual override engaged - Section B' },
+    { id: 4, time: '14:10:00', type: 'error', msg: 'Connection lost: Communication Tower 2' },
+  ]);
 
-interface Tour360 {
-  id: string;
-  nome: string;
-  provedor: string;
-  url: string;
-  descricao: string;
-}
-
-export default function Screen4({ projeto }: Screen4Props) {
-  const [activeTab, setActiveTab] = useState<'tour' | 'cameras' | 'info'>('tour');
-  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
-  const [selectedTour, setSelectedTour] = useState<Tour360 | null>(null);
-
-  // Mock data - Em produção, viriam da API
-  const tours360: Tour360[] = [
-    {
-      id: '1',
-      nome: 'Tour Completo do Projeto',
-      provedor: 'Acompanha360',
-      url: 'https://acompanha360.com/embed/projeto-123',
-      descricao: 'Visualização 360° de toda a área do projeto com pontos de interesse',
-    },
-    {
-      id: '2',
-      nome: 'BOS e Equipamentos',
-      provedor: 'Acompanha360',
-      url: 'https://acompanha360.com/embed/projeto-123/bos',
-      descricao: 'Tour detalhado do Battery Energy Storage System',
-    },
-    {
-      id: '3',
-      nome: 'Vista Aérea',
-      provedor: 'Acompanha360',
-      url: 'https://acompanha360.com/embed/projeto-123/drone',
-      descricao: 'Imagens aéreas por drone com visão 360°',
-    },
-  ];
-
-  const cameras: Camera[] = [
-    {
-      id: 'cam1',
-      nome: 'Câmera Principal',
-      locacao: 'Portão de Entrada',
-      status: 'online',
-      url: 'rtsp://streaming.example.com/cam1',
-      latitude: -25.4284,
-      longitude: -49.2733,
-    },
-    {
-      id: 'cam2',
-      nome: 'Câmera BOS',
-      locacao: 'Área de Armazenamento',
-      status: 'online',
-      url: 'rtsp://streaming.example.com/cam2',
-      latitude: -25.4286,
-      longitude: -49.2735,
-    },
-    {
-      id: 'cam3',
-      nome: 'Câmera Construção',
-      locacao: 'Zona de Obras',
-      status: 'standby',
-      url: 'rtsp://streaming.example.com/cam3',
-      latitude: -25.4288,
-      longitude: -49.2737,
-    },
-    {
-      id: 'cam4',
-      nome: 'Câmera Segurança',
-      locacao: 'Perímetro',
-      status: 'offline',
-      latitude: -25.4282,
-      longitude: -49.2731,
-    },
-  ];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'online':
-        return { bg: 'bg-matrix-orange/20', text: 'text-matrix-orange', label: 'Online' };
-      case 'standby':
-        return { bg: 'bg-white/10', text: 'text-matrix-offwhite/60', label: 'Standby' };
-      case 'offline':
-        return { bg: 'bg-red-900/40', text: 'text-red-400', label: 'Offline' };
-      default:
-        return { bg: 'bg-white/5', text: 'text-matrix-offwhite/20', label: 'Desconhecido' };
-    }
-  };
+  if (!selectedProject) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-bgLight text-muted italic">
+        Select a project from the Portfolio to view live monitoring.
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Header */}
-      <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-matrix-orange/10 blur-[100px] rounded-full -mr-32 -mt-32 group-hover:bg-matrix-orange/20 transition-all duration-1000" />
-        <h1 className="text-4xl font-black text-white mb-2 italic tracking-tighter">Tela 04: Tour & Monitoramento</h1>
-        <p className="text-matrix-offwhite/60 font-medium uppercase tracking-widest text-xs flex items-center gap-2">
-          <span className="w-2 h-2 bg-matrix-orange rounded-full animate-pulse" />
-          Operação em tempo real e visualização imersiva {projeto}
-        </p>
-      </div>
-
-      {/* Tab Navigation */}
-      <div className="bg-white/5 border border-white/5 rounded-2xl p-4 backdrop-blur-md">
-        <div className="flex gap-4 flex-wrap pb-4 border-b border-white/5 mb-4">
-          <button
-            onClick={() => setActiveTab('tour')}
-            className={`px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
-              activeTab === 'tour'
-                ? 'bg-matrix-orange text-white shadow-xl shadow-matrix-orange/20 scale-105'
-                : 'bg-white/5 text-matrix-offwhite/40 hover:bg-white/10 border border-white/5'
-            }`}
-          >
-            🎥 Tour 360°
-          </button>
-          <button
-            onClick={() => setActiveTab('cameras')}
-            className={`px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
-              activeTab === 'cameras'
-                ? 'bg-matrix-orange text-white shadow-xl shadow-matrix-orange/20 scale-105'
-                : 'bg-white/5 text-matrix-offwhite/40 hover:bg-white/10 border border-white/5'
-            }`}
-          >
-            📹 Live Feed
-            <span className={`px-2 py-0.5 rounded-full text-[8px] ${activeTab === 'cameras' ? 'bg-white/20' : 'bg-white/5'}`}>
-              {cameras.filter((c) => c.status === 'online').length}/{cameras.length}
-            </span>
-          </button>
-          <button
-            onClick={() => setActiveTab('info')}
-            className={`px-8 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
-              activeTab === 'info'
-                ? 'bg-matrix-orange text-white shadow-xl shadow-matrix-orange/20 scale-105'
-                : 'bg-white/5 text-matrix-offwhite/40 hover:bg-white/10 border border-white/5'
-            }`}
-          >
-            ℹ️ Info & VR
-          </button>
+    <>
+      <main className="flex-1 flex flex-col h-full overflow-hidden bg-bgLight p-6 gap-6">
+        {/* Top Intelligence Cards */}
+        <div className="grid grid-cols-4 gap-6 shrink-0">
+          {[
+            { label: 'Plant Availability', val: '99.8%', trend: '↑ 0.2%' },
+            { label: 'Current Power', val: '12.4 MW', trend: 'Stable' },
+            { label: 'Live Alerts', val: '02', trend: 'Active', color: 'text-accent-red' },
+            { label: 'Efficiency Index', val: '0.94', trend: 'Optimal' }
+          ].map((kpi) => (
+            <div key={kpi.label} className="bg-surface border border-border-color rounded-md p-5 h-[100px] flex flex-col justify-between">
+              <span className="text-xs font-bold text-muted uppercase tracking-wider">{kpi.label}</span>
+              <div className="flex justify-between items-baseline">
+                <span className={`text-2xl font-black ${kpi.color || 'text-text-main'}`}>{kpi.val}</span>
+                <span className="text-[10px] font-bold text-primary">{kpi.trend}</span>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
 
-      {/* Tab Content */}
-
-      {/* Tour 360° */}
-      {activeTab === 'tour' && (
-        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-          {/* Tour Selection */}
-          <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8">
-            <h2 className="text-xl font-black text-white italic uppercase tracking-tighter mb-8 flex items-center gap-3">
-              <span className="w-1 h-6 bg-matrix-orange rounded-full" />
-              Tours Disponíveis
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {tours360.map((tour) => (
-                <div
-                  key={tour.id}
-                  onClick={() => setSelectedTour(tour)}
-                  className={`p-6 rounded-2xl cursor-pointer transition-all duration-300 border group relative overflow-hidden ${
-                    selectedTour?.id === tour.id
-                      ? 'bg-matrix-orange/10 border-matrix-orange shadow-lg shadow-matrix-orange/10'
-                      : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/20'
-                  }`}
+        {/* Intelligence Center (70/30) */}
+        <div className="flex-1 flex gap-6 overflow-hidden">
+          {/* Main Floor Plan (70%) */}
+          <div className="w-[70%] bg-surface border border-border-color rounded-md flex flex-col overflow-hidden relative">
+            <div className="p-4 border-b border-border-color flex justify-between items-center bg-surface z-10">
+              <h3 className="text-lg font-bold text-text-main">Live Operations Center</h3>
+              <div className="flex gap-2">
+                <button 
+                  id="btn-view-2d"
+                  aria-label="Switch to 2D view"
+                  className="flex items-center gap-1 text-[10px] font-bold text-muted border border-border-color px-2 py-1 rounded hover:bg-bgLight"
                 >
-                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-500">🎥</div>
-                  <h3 className="text-white font-black italic tracking-tight mb-1">{tour.nome}</h3>
-                  <p className="text-matrix-orange font-bold text-[10px] uppercase tracking-widest mb-3">{tour.provedor}</p>
-                  <p className="text-matrix-offwhite/50 text-xs leading-relaxed line-clamp-2">{tour.descricao}</p>
+                  <span className="material-symbols-outlined text-[14px]">zoom_in</span>
+                  2D VIEW
+                </button>
+                <button 
+                  id="btn-view-3d"
+                  aria-label="Switch to 3D view"
+                  className="flex items-center gap-1 text-[10px] font-bold text-primary border border-primary/20 bg-primary/5 px-2 py-1 rounded"
+                >
+                  <span className="material-symbols-outlined text-[14px]">3d_rotation</span>
+                  3D VIEW
+                </button>
+              </div>
+            </div>
+            
+            <div className="flex-1 bg-bgLight flex items-center justify-center p-12 overflow-hidden">
+              {/* Mock SVG Floor Plan */}
+              <svg viewBox="0 0 600 400" className="w-full h-full max-w-[800px] drop-shadow-2xl">
+                {/* Site Boundaries */}
+                <rect x="50" y="50" width="500" height="300" rx="4" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="2" />
+                
+                {/* Solar Arrays / Sections */}
+                <g id="map-section-a" aria-label="Operational Section A" className="cursor-pointer group">
+                  <rect x="80" y="80" width="120" height="80" rx="2" fill="var(--primary)" fillOpacity="0.1" stroke="var(--primary)" strokeWidth="1" />
+                  <text x="140" y="125" textAnchor="middle" className="text-[10px] fill-primary font-bold">SECTION A</text>
+                  <circle cx="200" cy="80" r="4" fill="#22C55E" className="animate-pulse" />
+                </g>
+
+                <g id="map-section-b" aria-label="Operational Section B - Alert Active" className="cursor-pointer group">
+                  <rect x="240" y="80" width="120" height="80" rx="2" fill="var(--accent-red)" fillOpacity="0.05" stroke="var(--accent-red)" strokeWidth="1" strokeDasharray="4,2" />
+                  <text x="300" y="125" textAnchor="middle" className="text-[10px] fill-accent-red font-bold uppercase tracking-tighter">SECTION B [ALERT]</text>
+                  <circle cx="360" cy="80" r="4" fill="var(--accent-red)" className="animate-pulse" />
+                </g>
+
+                <g className="cursor-pointer group">
+                  <rect x="400" y="80" width="120" height="80" rx="2" fill="var(--primary)" fillOpacity="0.1" stroke="var(--primary)" strokeWidth="1" />
+                  <text x="460" y="125" textAnchor="middle" className="text-[10px] fill-primary font-bold">SECTION C</text>
+                </g>
+
+                <rect x="80" y="200" width="440" height="120" rx="2" fill="#F1F5F9" stroke="#E2E8F0" strokeWidth="1" />
+                <text x="300" y="265" textAnchor="middle" className="text-[12px] fill-muted font-bold opacity-30">MAIN OPERATIONAL AREA</text>
+                
+                {/* Connection Lines */}
+                <path d="M140,160 L140,200 M300,160 L300,200 M460,160 L460,200" stroke="#CBD5E1" strokeWidth="1" strokeDasharray="3,3" />
+              </svg>
+
+              {/* Float Info Box */}
+              <div className="absolute top-20 right-8 bg-surface border border-border-color shadow-xl rounded p-4 w-48 animate-in fade-in slide-in-from-right-4">
+                <p className="text-[10px] font-bold text-muted uppercase mb-1">SELECTED UNIT</p>
+                <p className="text-sm font-black text-text-main mb-3">INVERTER_B_04</p>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[10px] font-medium">
+                    <span className="text-muted">TEMP:</span>
+                    <span className="text-accent-red font-bold">82°C</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-medium">
+                    <span className="text-muted">LOAD:</span>
+                    <span className="text-text-main font-bold">94%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Activity Log (30%) */}
+          <div className="w-[30%] bg-surface border border-border-color rounded-md flex flex-col overflow-hidden">
+            <div className="p-4 border-b border-border-color bg-surface shrink-0">
+              <h3 className="text-lg font-bold text-text-main">Live Activity Feed</h3>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {logs.map((log) => (
+                <div key={log.id} className={`flex gap-3 p-3 rounded-md border text-xs transition-all hover:translate-x-1 ${log.type === 'error' ? 'bg-red-50 border-red-100' : log.type === 'warning' ? 'bg-orange-50 border-orange-100' : 'bg-bgLight border-border-color'}`}>
+                  <span className={`material-symbols-outlined text-[16px] shrink-0 mt-0.5 ${log.type === 'error' ? 'text-accent-red' : log.type === 'warning' ? 'text-orange-500' : 'text-primary'}`}>
+                    {log.type === 'error' ? 'error' : log.type === 'warning' ? 'warning' : 'info'}
+                  </span>
+                  <div>
+                    <div className="flex justify-between items-center mb-0.5">
+                      <span className="font-bold text-text-main uppercase text-[9px] tracking-widest">{log.type}</span>
+                      <span className="text-muted opacity-60 tabular-nums">{log.time}</span>
+                    </div>
+                    <p className="text-text-main leading-relaxed font-medium">{log.msg}</p>
+                  </div>
                 </div>
               ))}
             </div>
+            <button 
+              id="btn-view-history"
+              aria-label="View full activity history"
+              className="p-3 text-[10px] font-bold text-primary uppercase tracking-widest border-t border-border-color hover:bg-bgLight transition-all"
+            >
+              View Full History
+            </button>
           </div>
-
-          {/* Tour Viewer */}
-          {selectedTour ? (
-            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 space-y-8">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-3xl font-black text-white italic tracking-tighter mb-2">{selectedTour.nome}</h3>
-                  <p className="text-matrix-offwhite/60 font-medium text-sm">{selectedTour.descricao}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedTour(null)}
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-matrix-offwhite/40 hover:bg-white/10 hover:text-white transition-all group"
-                >
-                  <span className="text-xl group-hover:rotate-90 transition-transform">✕</span>
-                </button>
-              </div>
-
-              {/* Viewer */}
-              <div className="w-full h-[500px] bg-black rounded-2xl flex items-center justify-center relative overflow-hidden border border-white/5 shadow-inner">
-                {/* Mock 360 Viewer */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-40">
-                  <div className="text-center">
-                    <div className="text-8xl mb-6 animate-pulse text-matrix-orange">🎥</div>
-                    <p className="text-matrix-offwhite/60 font-black uppercase tracking-[0.3em] text-sm">Visualizador 360° Ativo</p>
-                    <p className="text-matrix-orange/40 font-bold text-[10px] uppercase tracking-widest mt-2">{selectedTour.provedor} Engine</p>
-                  </div>
-                </div>
-
-                {/* Hotspot Floating */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-matrix-orange/10 rounded-full border border-matrix-orange/20 animate-ping opacity-20" />
-
-                {/* Placeholder Info Overlay */}
-                <div className="absolute bottom-6 left-6 right-6 bg-matrix-graphite/80 backdrop-blur-xl border border-white/10 rounded-xl p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-matrix-orange rounded-lg flex items-center justify-center font-black text-white text-xs">i</div>
-                    <p className="text-matrix-offwhite/80 text-[10px] font-bold uppercase tracking-widest">
-                      Carregando stream imersiva de alta densidade...
-                    </p>
-                  </div>
-                  <button className="bg-matrix-orange text-white px-4 py-2 rounded-lg font-black uppercase tracking-widest text-[9px] hover:scale-105 transition-transform">
-                    Expandir Tour
-                  </button>
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { label: 'Procurar', icon: '🔍' },
-                  { label: 'Girar', icon: '↻' },
-                  { label: 'Habilitar VR', icon: '🥽' },
-                  { label: 'Tela Cheia', icon: '⛶' }
-                ].map((ctrl) => (
-                  <button key={ctrl.label} className="bg-white/5 border border-white/10 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] py-4 rounded-xl transition-all flex items-center justify-center gap-3">
-                    <span className="text-lg opacity-60">{ctrl.icon}</span>
-                    {ctrl.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Hotspots Panel */}
-              <div className="bg-white/5 border border-white/5 rounded-2xl p-6">
-                <h4 className="text-white font-black italic uppercase tracking-tight mb-6 flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 bg-matrix-orange rounded-full" />
-                  Pontos de Interesse Identificados 📍
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    { name: 'BOS Central', desc: 'Sistemas de Armazenamento de Energia em Bateria' },
-                    { name: 'Transformador 01-04', desc: 'Unidades Críticas de Conversão de Potência' },
-                    { name: 'SCADA Panel', desc: 'Central de Monitoramento e Proteção' },
-                    { name: 'Grip de Conexão', desc: 'Interface de Rede 13,8 kV' },
-                  ].map((spot, idx) => (
-                    <div key={idx} className="bg-white/5 p-4 rounded-xl border border-white/5 hover:border-white/20 transition-all flex items-start gap-3 group">
-                      <div className="w-8 h-8 bg-matrix-orange/10 rounded-lg flex items-center justify-center group-hover:bg-matrix-orange transition-colors">
-                        <span className="text-matrix-orange text-xs group-hover:text-white">📍</span>
-                      </div>
-                      <div>
-                        <p className="text-white font-bold text-sm tracking-tight">{spot.name}</p>
-                        <p className="text-matrix-offwhite/40 text-[10px] font-medium uppercase tracking-widest">{spot.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-lg p-24 text-center group">
-              <div className="text-7xl mb-6 opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700">📽️</div>
-              <p className="text-matrix-offwhite/40 font-black uppercase tracking-[0.2em] text-xs">
-                Selecione um tour dinâmico para carregar a visualização
-              </p>
-            </div>
-          )}
         </div>
-      )}
 
-      {/* Live Stream */}
-      {activeTab === 'cameras' && (
-        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-          {/* Camera Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {cameras.map((camera) => {
-              const statusColor = getStatusColor(camera.status);
-              const isSelected = selectedCamera?.id === camera.id;
-
-              return (
-                <div
-                  key={camera.id}
-                  onClick={() => setSelectedCamera(camera)}
-                  className={`rounded-2xl overflow-hidden shadow-2xl cursor-pointer transition-all duration-500 border ${
-                    isSelected ? 'ring-2 ring-matrix-orange border-matrix-orange' : 'border-white/10 hover:border-white/30'
-                  }`}
-                >
-                  {/* Video Feed Placeholder */}
-                  <div className="relative w-full h-64 bg-black group overflow-hidden">
-                    <div className="absolute inset-0 bg-matrix-graphite flex items-center justify-center group-hover:scale-110 transition-transform duration-1000">
-                      <div className="text-center opacity-40 group-hover:opacity-100 transition-opacity">
-                        <div className="text-6xl mb-2 text-matrix-orange">📹</div>
-                        <p className="text-matrix-offwhite font-black uppercase tracking-widest text-[10px]">{camera.nome}</p>
-                      </div>
-                    </div>
-
-                    {/* Status Badge */}
-                    <div
-                      className={`absolute top-4 right-4 ${statusColor.bg} ${statusColor.text} px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 backdrop-blur-md border border-white/10`}
-                    >
-                      <span className={`w-2 h-2 rounded-full ${camera.status === 'online' ? 'animate-pulse' : ''} bg-current`} />
-                      {statusColor.label}
-                    </div>
-                  </div>
-
-                  {/* Info */}
-                  <div className="bg-matrix-graphite p-6 border-t border-white/5">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="text-white font-black italic tracking-tight text-lg mb-1">{camera.nome}</h3>
-                        <p className="text-matrix-offwhite/40 font-bold text-[10px] uppercase tracking-[0.2em]">📍 {camera.locacao}</p>
-                      </div>
-                    </div>
-
-                    {camera.latitude && camera.longitude && (
-                      <div className="flex items-center gap-2 mb-6">
-                        <span className="w-1 h-1 bg-matrix-orange rounded-full" />
-                        <p className="text-matrix-offwhite/20 font-black text-[9px] uppercase tracking-widest">
-                          GEOREF: {camera.latitude.toFixed(4)}N / {camera.longitude.toFixed(4)}W
-                        </p>
-                      </div>
-                    )}
-
-                    <div className="flex gap-4">
-                      <button
-                        disabled={camera.status === 'offline'}
-                        className="flex-1 bg-white/5 border border-white/10 hover:bg-matrix-orange hover:border-matrix-orange hover:text-white disabled:opacity-20 disabled:cursor-not-allowed text-matrix-offwhite/60 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
-                      >
-                        Ativar Stream
-                      </button>
-                      <button
-                        disabled={!camera.latitude}
-                        className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-20 disabled:cursor-not-allowed text-matrix-offwhite/60 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all"
-                      >
-                        Deep Map
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Camera Details / Full View */}
-          {selectedCamera && (
-            <div className="bg-matrix-graphite border border-white/20 rounded-2xl shadow-2xl p-8 space-y-8 animate-in zoom-in-95 duration-500">
-              <div className="flex justify-between items-start">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">{selectedCamera.nome}</h3>
-                    <span className="px-3 py-1 bg-matrix-orange/20 text-matrix-orange rounded-lg font-black text-[10px] uppercase">Master View</span>
-                  </div>
-                  <p className="text-matrix-offwhite/60 font-bold text-xs uppercase tracking-widest leading-relaxed">Localização Estratégica: {selectedCamera.locacao}</p>
-                </div>
-                <button
-                  onClick={() => setSelectedCamera(null)}
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-matrix-offwhite/40 hover:bg-white/10 hover:text-white transition-all"
-                >
-                  <span className="text-xl">✕</span>
-                </button>
+        {/* Bottom Trend Analysis */}
+        <div className="bg-surface border border-border-color rounded-md h-[180px] shrink-0 p-5 flex flex-col">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm font-bold text-muted uppercase tracking-wider">Health Trend (24h)</h3>
+            <div className="flex gap-4 text-[10px] font-bold uppercase tracking-wider">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary"></span>
+                <span className="text-text-main">Efficiency</span>
               </div>
-
-              {/* Live Viewer */}
-              <div className="w-full h-[600px] bg-black rounded-2xl flex items-center justify-center relative border border-white/10 overflow-hidden group">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-matrix-orange/5 via-transparent to-transparent opacity-50" />
-                
-                <div className="text-center group-hover:scale-110 transition-transform duration-1000 z-10">
-                  <div className="text-9xl mb-6 text-matrix-orange opacity-20">📹</div>
-                  <p className="text-matrix-offwhite/60 font-black uppercase tracking-[0.5em] text-sm">Transmissão Direta</p>
-                  <p className="text-matrix-offwhite/20 font-bold text-[10px] uppercase tracking-widest mt-4">
-                    {selectedCamera.status === 'online' ? 'Status: Fluxo de Dados Sincronizado' : 'Status: Conexão Interrompida'}
-                  </p>
-                </div>
-
-                {selectedCamera.status === 'online' && (
-                  <div className="absolute top-8 right-8 flex items-center gap-4 bg-black/40 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10">
-                    <span className="w-2.5 h-2.5 rounded-full animate-pulse bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]" />
-                    <span className="text-white text-xs font-black uppercase tracking-[0.2em]">Live Operating</span>
-                  </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-muted"></span>
+                <span className="text-muted">Load Avg</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex-1 flex items-end justify-between gap-1 mt-2">
+            {[40, 45, 42, 38, 35, 30, 32, 40, 55, 65, 80, 85, 90, 88, 85, 82, 80, 78, 75, 70, 65, 60, 55, 50].map((h, i) => (
+              <div key={i} className="flex-1 group relative">
+                <div 
+                  className="w-full bg-primary/20 group-hover:bg-primary transition-all rounded-t-sm" 
+                  style={{ height: `${h}%` }}
+                ></div>
+                {i % 4 === 0 && (
+                  <span className="absolute -bottom-5 left-0 text-[8px] text-muted font-bold">{i}:00</span>
                 )}
-                
-                <div className="absolute bottom-8 left-8 flex items-center gap-8">
-                   <div className="text-[10px] font-black text-white/40 uppercase bg-black/40 px-4 py-2 rounded-lg border border-white/5">BITRATE: 4.8MBPS</div>
-                   <div className="text-[10px] font-black text-white/40 uppercase bg-black/40 px-4 py-2 rounded-lg border border-white/5">ENC: H.265</div>
-                   <div className="text-[10px] font-black text-matrix-orange uppercase bg-black/40 px-4 py-2 rounded-lg border border-white/10 animate-pulse">REC ●</div>
-                </div>
               </div>
-
-              {/* Camera Metadata */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[
-                  { label: 'Status Operacional', val: getStatusColor(selectedCamera.status).label, highlight: true },
-                  { label: 'Macro Região', val: selectedCamera.locacao, highlight: false },
-                  { label: 'Latitude Coord', val: selectedCamera.latitude?.toFixed(4) || 'N/A', highlight: false },
-                  { label: 'Longitude Coord', val: selectedCamera.longitude?.toFixed(4) || 'N/A', highlight: false }
-                ].map((item, idx) => (
-                  <div key={idx} className="bg-white/5 border border-white/5 rounded-2xl p-6">
-                    <p className="text-matrix-offwhite/30 text-[9px] font-black uppercase tracking-widest mb-2">{item.label}</p>
-                    <p className={`text-white font-black italic tracking-tight ${item.highlight ? 'text-matrix-orange' : ''}`}>{item.val}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* PTZ Controls */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { label: 'PAN UP', action: '↑' },
-                  { label: 'PAN DOWN', action: '↓' },
-                  { label: 'ZOOM IN', action: '🔍+' },
-                  { label: 'ZOOM OUT', action: '🔍-' }
-                ].map((ctrl) => (
-                  <button
-                    key={ctrl.label}
-                    disabled={selectedCamera.status === 'offline'}
-                    className="bg-white/5 border border-white/10 hover:bg-matrix-orange hover:text-white text-matrix-offwhite/60 font-black uppercase tracking-widest text-[10px] py-4 rounded-xl transition-all disabled:opacity-10"
-                  >
-                    {ctrl.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Info & VR */}
-      {activeTab === 'info' && (
-        <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
-          {/* VR Support Header */}
-          <div className="bg-matrix-orange border border-matrix-orange/20 rounded-2xl p-10 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.2),_transparent)] opacity-50" />
-            <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
-              <div className="text-8xl group-hover:rotate-12 transition-transform duration-700">🥽</div>
-              <div>
-                <h3 className="text-4xl font-black text-white italic uppercase tracking-tighter mb-4">Imersão VR Nativa</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                  {[
-                    'Compatibilidade Meta/Oculus',
-                    'Aceleração WebXR Sincronizada',
-                    'Audio Espacial 3D Ativo',
-                    'Hand Tracking Habilitado'
-                  ].map((feat) => (
-                    <div key={feat} className="flex items-center gap-3">
-                      <div className="w-1.5 h-1.5 bg-white rounded-full" />
-                      <p className="text-white font-bold uppercase tracking-widest text-[10px]">{feat}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Project Specs */}
-            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8">
-              <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-8 shadow-sm">Especificações Técnicas</h3>
-              <div className="space-y-6">
-                {[
-                  { label: 'Código Projeto', val: projeto },
-                  { label: 'Sistema GEO', val: 'WGS84 / EPSG:4326' },
-                  { label: 'Altímetria Média', val: '842m ASL' },
-                  { label: 'Footprint Área', val: '2.500 m² Operacional' }
-                ].map((spec) => (
-                  <div key={spec.label} className="flex justify-between items-end border-b border-white/5 pb-2">
-                    <p className="text-matrix-offwhite/30 font-black uppercase tracking-widest text-[9px]">{spec.label}</p>
-                    <p className="text-white font-black italic tracking-tight">{spec.val}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Integrations */}
-            <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8">
-              <h3 className="text-xl font-black text-white italic uppercase tracking-tighter mb-8">Conectividade & API</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { name: 'Acompanha360', status: 'Sincronizado' },
-                  { name: 'RTSP Hyper', status: 'Ativo' },
-                  { name: 'MAPS Engine', status: 'Conectado' },
-                  { name: 'DeepXR', status: 'Habilitado' }
-                ].map((conn) => (
-                  <div key={conn.name} className="bg-white/5 border border-white/5 p-4 rounded-xl hover:border-matrix-orange/30 transition-all cursor-pointer">
-                    <p className="text-white font-black text-xs italic mb-1">{conn.name}</p>
-                    <p className="text-matrix-orange font-bold text-[8px] uppercase tracking-widest">{conn.status}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Keyboard Protocol */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-wrap items-center justify-center gap-8 backdrop-blur-md">
-            <p className="text-matrix-offwhite/40 font-black uppercase tracking-[0.2em] text-[10px]">Protocolo de Comando:</p>
-            <div className="flex gap-4">
-               {['F: Fullscreen', 'V: VR Mode', 'SPACE: Pause'].map(key => (
-                 <div key={key} className="flex items-center gap-2">
-                   <div className="w-1 h-1 bg-matrix-orange rounded-full" />
-                   <span className="text-white font-bold text-[9px] uppercase tracking-widest">{key}</span>
-                 </div>
-               ))}
-            </div>
+            ))}
           </div>
         </div>
-      )}
-    </div>
+      </main>
+    </>
   );
 }

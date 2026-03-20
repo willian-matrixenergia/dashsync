@@ -2,9 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #FF6600;
+  --bg-light: #F4F5F7;
+  --bg-dark: #221710;
+  --text-main: #0F172A;
+  --surface: #FFFFFF;
+}
+
 @layer base {
   body {
-    @apply bg-matrix-graphite text-matrix-offwhite;
+    background-color: #F4F5F7;
+    color: #0F172A;
+    @apply antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  .dark body {
+    background-color: #221710;
+    color: #f1f5f9;
   }
 }

@@ -8,18 +8,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        matrix: {
-          orange: '#FF4A00',
-          hover: '#D14217',
-          graphite: '#151B1C',
-          offwhite: '#F1F3F0',
-        },
-        gray: {
-          950: '#0f172a',
-        },
+        primary: "var(--primary)",
+        bgLight: "var(--bg-light)",
+        bgDark: "var(--bg-dark)",
+        surface: "var(--surface)",
+        textMain: "var(--text-main)",
+        muted: "#64748B",
+        accentRed: "#DC2626",
+        borderColor: "#E2E8F0"
       },
       fontFamily: {
-        sans: ['var(--font-lexend)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ["Plus Jakarta Sans", "sans-serif"],
+        sans: ["Plus Jakarta Sans", "sans-serif"],
       },
     },
   },

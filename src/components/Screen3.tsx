@@ -1,140 +1,166 @@
-import { useState, useCallback } from 'react';
-import { MediaItem } from '../types';
-import MediaUpload from './gallery/MediaUpload';
-import MediaGrid from './gallery/MediaGrid';
-import MediaLightbox from './gallery/MediaLightbox';
+import { PortfolioMaster } from '../types';
+import { useState } from 'react';
 
 interface Screen3Props {
-  projeto: string;
+  selectedProject: PortfolioMaster | null;
 }
 
-export default function Screen3({ projeto }: Screen3Props) {
-  const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<'Suprimentos' | 'Obras' | 'Aéreas' | 'Todas'>('Todas');
-  const [selectedImage, setSelectedImage] = useState<MediaItem | null>(null);
-  const [loading, setLoading] = useState(false);
+export default function Screen3({ selectedProject }: Screen3Props) {
+  const [activeFolder, setActiveFolder] = useState('All Assets');
 
-  const filteredMedia = selectedCategory === 'Todas'
-    ? mediaItems
-    : mediaItems.filter((m) => m.categoria === selectedCategory);
+  if (!selectedProject) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-bgLight text-muted italic">
+        Select a project from the Portfolio to view media assets.
+      </div>
+    );
+  }
 
-  const handleUpload = useCallback(async (files: File[], categoria: 'Suprimentos' | 'Obras' | 'Aéreas') => {
-    setLoading(true);
-    try {
-      const newItems: MediaItem[] = files.map((file, idx) => ({
-        id: `${Date.now()}-${idx}`,
-        projeto,
-        categoria,
-        titulo: file.name.replace(/\.[^/.]+$/, ''),
-        url: URL.createObjectURL(file),
-        data_upload: new Date().toISOString(),
-        descricao: '',
-      }));
+  const folders = [
+    { name: 'All Assets', icon: 'grid_view', count: 124 },
+    { name: 'Recent Week', icon: 'schedule', count: 12 },
+    { name: 'Equipment', icon: 'inventory_2', count: 45 },
+    { name: 'Site Progress', icon: 'foundation', count: 67 },
+  ];
 
-      setMediaItems([...mediaItems, ...newItems]);
-    } catch (err) {
-      console.error('Failed to upload:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [mediaItems, projeto]);
-
-  const handleDelete = useCallback((id: string) => {
-    setMediaItems(mediaItems.filter((m) => m.id !== id));
-    if (selectedImage?.id === id) setSelectedImage(null);
-  }, [mediaItems, selectedImage]);
+  const assets = [
+    { id: 1, type: 'image', status: 'verified', date: '2024-03-15', label: 'IMG_4829.jpg' },
+    { id: 2, type: 'video', status: 'verified', date: '2024-03-14', label: 'DRONE_SURVEY_01.mp4' },
+    { id: 3, type: 'image', status: 'pending', date: '2024-03-14', label: 'IMG_4828.jpg' },
+    { id: 4, type: 'image', status: 'verified', date: '2024-03-13', label: 'IMG_4827.jpg' },
+    { id: 5, type: 'image', status: 'verified', date: '2024-03-13', label: 'IMG_4826.jpg' },
+    { id: 6, type: 'image', status: 'pending', date: '2024-03-12', label: 'IMG_4825.jpg' },
+    { id: 7, type: 'image', status: 'verified', date: '2024-03-12', label: 'IMG_4824.jpg' },
+    { id: 8, type: 'image', status: 'verified', date: '2024-03-11', label: 'IMG_4823.jpg' },
+  ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Header */}
-      <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-matrix-orange/10 blur-[100px] rounded-full -mr-32 -mt-32 group-hover:bg-matrix-orange/20 transition-all duration-1000" />
-        <h1 className="text-4xl font-black text-white mb-2 italic tracking-tighter">Tela 03: Galeria de Mídia</h1>
-        <p className="text-matrix-offwhite/60 font-medium uppercase tracking-widest text-xs flex items-center gap-2">
-          <span className="w-2 h-2 bg-matrix-orange rounded-full animate-pulse" />
-          Registros visuais do projeto {projeto}
-        </p>
-      </div>
-
-      <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-xl overflow-hidden">
-        <MediaUpload projeto={projeto} onUpload={handleUpload} loading={loading} />
-      </div>
-
-      <div className="bg-white/5 border border-white/5 rounded-2xl p-6 backdrop-blur-md">
-        <div className="flex flex-wrap gap-3">
-          {['Todas', 'Suprimentos', 'Obras', 'Aéreas'].map((cat) => {
-            const isActive = selectedCategory === cat;
-            const count = cat === 'Todas' ? mediaItems.length : mediaItems.filter((m) => m.categoria === cat).length;
-            
-            return (
+    <>
+      {/* Media Sidebar (30%) */}
+      <aside className="w-[30%] bg-surface border-r border-border-color flex flex-col h-full overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-lg font-bold text-text-main">Media Library</h3>
+            <button 
+              id="btn-new-folder"
+              aria-label="Create new folder"
+              className="material-symbols-outlined text-muted hover:text-primary transition-colors"
+            >
+              create_new_folder
+            </button>
+          </div>
+          
+          <nav className="space-y-1">
+            {folders.map(folder => (
               <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat as any)}
-                className={`px-6 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 flex items-center gap-3 ${
-                  isActive
-                    ? 'bg-matrix-orange text-white shadow-lg shadow-matrix-orange/20 scale-105'
-                    : 'bg-white/5 text-matrix-offwhite/60 hover:bg-white/10 border border-white/5'
-                }`}
+                key={folder.name}
+                id={`btn-folder-${folder.name.replace(/\s+/g, '-').toLowerCase()}`}
+                aria-label={`Open folder ${folder.name}`}
+                onClick={() => setActiveFolder(folder.name)}
+                className={`w-full flex items-center justify-between p-3 rounded-md transition-all group ${activeFolder === folder.name ? 'bg-primary/5 text-primary' : 'text-muted hover:bg-bgLight hover:text-text-main'}`}
               >
-                {cat}
-                <span className={`px-2 py-0.5 rounded-full text-[8px] ${isActive ? 'bg-white/20 text-white' : 'bg-white/10 text-matrix-offwhite/40'}`}>
-                  {count}
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-[20px]">{folder.icon}</span>
+                  <span className="text-sm font-bold uppercase tracking-wider">{folder.name}</span>
+                </div>
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${activeFolder === folder.name ? 'bg-primary/20 text-primary' : 'bg-bgLight text-muted group-hover:bg-border-color'}`}>
+                  {folder.count}
                 </span>
               </button>
-            );
-          })}
-        </div>
-      </div>
+            ))}
+          </nav>
 
-      <MediaGrid
-        items={filteredMedia}
-        onSelect={setSelectedImage}
-        onDelete={handleDelete}
-        selectedId={selectedImage?.id}
-      />
-
-      {selectedImage && (
-        <MediaLightbox
-          items={filteredMedia}
-          initialIndex={filteredMedia.findIndex((m) => m.id === selectedImage.id)}
-          onClose={() => setSelectedImage(null)}
-          onNext={(idx) => setSelectedImage(filteredMedia[idx])}
-        />
-      )}
-
-      {mediaItems.length === 0 && (
-        <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-lg p-20 text-center group">
-          <div className="text-7xl mb-6 grayscale group-hover:grayscale-0 transition-all duration-500 scale-100 group-hover:scale-110">📸</div>
-          <p className="text-matrix-offwhite/40 font-bold uppercase tracking-widest text-xs leading-relaxed">
-            Nenhuma evidência visual registrada.<br />
-            Utilize o módulo de upload acima para iniciar.
-          </p>
-        </div>
-      )}
-
-      {mediaItems.length > 0 && (
-        <div className="bg-matrix-graphite border border-white/10 rounded-2xl shadow-2xl p-8 hover:border-white/20 transition-all">
-          <h2 className="text-xl font-black text-white uppercase tracking-tighter italic mb-8">Resumo da Galeria</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white/5 border border-white/5 rounded-xl p-6 hover:bg-white/[0.08] transition-all">
-              <p className="text-[10px] font-bold text-matrix-offwhite/40 uppercase tracking-widest mb-2">Total de Arquivos</p>
-              <p className="text-4xl font-black text-white italic">{mediaItems.length}</p>
-            </div>
-            <div className="bg-white/5 border border-white/5 rounded-xl p-6 hover:bg-white/[0.08] transition-all">
-              <p className="text-[10px] font-bold text-matrix-offwhite/40 uppercase tracking-widest mb-2">Suprimentos</p>
-              <p className="text-4xl font-black text-white italic opacity-40">
-                {mediaItems.filter((m) => m.categoria === 'Suprimentos').length}
-              </p>
-            </div>
-            <div className="bg-matrix-orange/5 border border-matrix-orange/10 rounded-xl p-6 hover:bg-matrix-orange/10 transition-all">
-              <p className="text-[10px] font-bold text-matrix-orange/60 uppercase tracking-widest mb-2">Obras & Aéreas</p>
-              <p className="text-4xl font-black text-matrix-orange italic">
-                {mediaItems.filter((m) => m.categoria !== 'Suprimentos').length}
-              </p>
+          <div className="mt-12 pt-8 border-t border-border-color">
+            <h4 className="text-xs font-bold text-muted uppercase tracking-widest mb-4 px-3">Storage Details</h4>
+            <div className="px-3 space-y-4">
+              <div className="flex justify-between text-xs font-medium mb-1">
+                <span className="text-muted">Used Space</span>
+                <span className="text-text-main">12.4 GB / 100 GB</span>
+              </div>
+              <div className="w-full bg-bgLight rounded-full h-2 overflow-hidden">
+                <div className="bg-primary h-full rounded-full" style={{ width: '12.4%' }}></div>
+              </div>
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </aside>
+
+      {/* Main Content Area (70%) */}
+      <main className="w-[70%] flex flex-col h-full overflow-hidden bg-bgLight">
+        {/* Gallery Header */}
+        <div className="p-6 border-b border-border-color flex justify-between items-center shrink-0 bg-surface">
+          <div>
+            <h1 className="text-2xl font-bold text-text-main">{activeFolder}</h1>
+            <p className="text-sm text-muted">{selectedProject.projeto} • {folders.find(f => f.name === activeFolder)?.count || 0} Assets</p>
+          </div>
+          <div className="flex gap-3">
+            <button 
+              id="btn-gallery-filters"
+              aria-label="Toggle gallery filters"
+              className="flex items-center gap-2 bg-surface text-text-main border border-border-color px-4 py-2 rounded-md text-sm font-bold hover:bg-bgLight transition-all"
+            >
+              <span className="material-symbols-outlined text-[18px]">filter_list</span>
+              Filters
+            </button>
+            <button 
+              id="btn-upload-assets"
+              aria-label="Upload new media assets"
+              className="flex items-center gap-2 bg-primary text-white border border-primary px-4 py-2 rounded-md text-sm font-bold hover:bg-primary/90 transition-all shadow-sm shadow-primary/20"
+            >
+              <span className="material-symbols-outlined text-[18px]">cloud_upload</span>
+              Upload Assets
+            </button>
+          </div>
+        </div>
+
+        {/* Gallery Grid */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="grid grid-cols-4 gap-6">
+            {assets.map(asset => (
+              <div key={asset.id} className="bg-surface border border-border-color rounded-md overflow-hidden group hover:border-primary transition-all flex flex-col">
+                <div className="aspect-square bg-bgLight relative overflow-hidden flex items-center justify-center mb-2">
+                  {/* Mock Content Placeholder */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
+                  <span className="material-symbols-outlined text-muted/20 text-[64px] group-hover:scale-110 transition-transform duration-500">
+                    {asset.type === 'image' ? 'image' : 'smart_display'}
+                  </span>
+                  
+                  {/* Status Badge Overlay */}
+                  <div className="absolute top-2 right-2">
+                    <span className={`flex items-center justify-center p-1 rounded-full shadow-sm ${asset.status === 'verified' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+                      <span className="material-symbols-outlined text-[14px]">
+                        {asset.status === 'verified' ? 'verified' : 'pending'}
+                      </span>
+                    </span>
+                  </div>
+
+                  {/* Hover Actions Overlay */}
+                  <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                    <button 
+                      id={`btn-view-asset-${asset.id}`}
+                      aria-label={`View asset ${asset.label}`}
+                      className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                    >
+                      <span className="material-symbols-outlined">visibility</span>
+                    </button>
+                    <button 
+                      id={`btn-download-asset-${asset.id}`}
+                      aria-label={`Download asset ${asset.label}`}
+                      className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                    >
+                      <span className="material-symbols-outlined">file_download</span>
+                    </button>
+                  </div>
+                </div>
+                <div className="p-3 border-t border-border-color">
+                  <p className="text-xs font-bold text-text-main truncate mb-1">{asset.label}</p>
+                  <p className="text-[10px] text-muted font-bold uppercase tracking-tighter">{asset.date}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
+    </>
   );
 }

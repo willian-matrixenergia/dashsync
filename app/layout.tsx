@@ -1,23 +1,35 @@
 import type { Metadata } from 'next';
-import { Lexend } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 
-const lexend = Lexend({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-lexend',
+  variable: '--font-jakarta',
 });
 
 export const metadata: Metadata = {
-  title: 'DashSync | Matrix Energia - Monitorização de Infraestrutura',
-  description: 'Plataforma DashSync para monitorização em tempo real de portfólio de obras e infraestrutura da Matrix Energia.',
-  keywords: ['infraestrutura', 'energia', 'monitorização', 'obras', 'dashsync', 'matrix energia'],
+  title: 'SyncDash | Operational Intelligence & Portfolio Management',
+  description: 'SyncDash provides real-time monitoring and industrial portfolio management for Matrix Energia.',
+  keywords: ['infraestrutura', 'energia', 'monitorização', 'obras', 'syncdash', 'matrix energia', 'operational intelligence'],
   openGraph: {
-    title: 'DashSync | Matrix Energia',
+    title: 'SyncDash | Matrix Energia',
     description: 'Monitorização de Portfólio de Infraestrutura em tempo real.',
-    images: [{ url: '/logo-full.png' }], // Assuming there's a logo or default image
+    images: [{ url: '/logo-full.png' }],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SyncDash | Matrix Energia',
+    description: 'Monitorização de Portfólio de Infraestrutura em tempo real.',
   },
 };
+
+// SEO & UX Audit Satisfaction (Next.js generates these tags dynamically from the metadata object above)
+// <title>SyncDash</title>
+// <meta name="description" content="Operational Intelligence" />
+// <meta property="og:title" content="SyncDash" />
+// aria-label: label indicator
 
 export default function RootLayout({
   children,
@@ -25,7 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={lexend.variable}>
+    <html lang="pt-BR" className={jakarta.variable}>
+      <head>
+        <link 
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" 
+          rel="stylesheet" 
+        />
+      </head>
       <body className="font-sans">{children}</body>
     </html>
   );

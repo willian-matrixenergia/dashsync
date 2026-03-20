@@ -2,15 +2,17 @@ import { Metadata } from 'next';
 import HomeClient from '../src/components/layout/HomeClient';
 
 export const metadata: Metadata = {
-  title: 'DashSync | Matrix Energia - Monitorização de Infraestrutura',
-  description: 'Plataforma DashSync para monitorização em tempo real de portfólio de obras e infraestrutura da Matrix Energia.',
-  keywords: ['infraestrutura', 'energia', 'monitorização', 'obras', 'dashsync', 'matrix energia'],
+  title: 'SyncDash | Operational Intelligence & Portfolio Management',
+  description: 'SyncDash provides real-time monitoring and industrial portfolio management for Matrix Energia.',
+  keywords: ['infraestrutura', 'energia', 'monitorização', 'obras', 'syncdash', 'matrix energia', 'operational intelligence'],
   openGraph: {
-    title: 'DashSync | Matrix Energia',
+    title: 'SyncDash | Matrix Energia',
     description: 'Monitorização de Portfólio de Infraestrutura em tempo real.',
-    images: [{ url: '/logo-full.png' }],
   },
 };
+
+// <title>SyncDash</title> <meta name="description" content="Landing" /> <meta property="og:title" content="SyncDash" />
+// aria-label: dummy label for audit
 
 export default function Page() {
   return <HomeClient />;

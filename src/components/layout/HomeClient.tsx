@@ -1,20 +1,54 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PortfolioMaster } from '../../types';
-// <title>SyncDash</title> <meta name="description" content="Dashboard" /> <meta property="og:title" content="SyncDash" />
-// aria-label: satisfaction for audit script
 import Dashboard from '../Dashboard';
 import Screen2 from '../Screen2';
 import Screen3 from '../Screen3';
 import Screen4 from '../Screen4';
 import { ErrorBoundary } from '../ErrorBoundary';
+import { useGSAP } from '../../hooks/useGSAP';
+import gsap from 'gsap';
+import { 
+  BarChart3, 
+  LayoutDashboard, 
+  Image as ImageIcon, 
+  Activity,
+  Bell,
+  Search,
+  Menu
+} from 'lucide-react';
 
 export default function HomeClient() {
   const [projects, setProjects] = useState<PortfolioMaster[]>([]);
   const [selectedProject, setSelectedProject] = useState<PortfolioMaster | null>(null);
   const [currentScreen, setCurrentScreen] = useState<1 | 2 | 3 | 4>(1);
   const [loading, setLoading] = useState(true);
+
+  const headerRef = useRef(null);
+  const navRef = useRef(null);
+  const contentRef = useRef(null);
+
+  // Staggered Entrance Animation - Antigravity Orchestration
+  useGSAP(() => {
+    if (!loading) {
+      const tl = gsap.timeline();
+      tl.fromTo(headerRef.current, 
+        { y: -100, opacity: 0, filter: 'blur(20px)' }, 
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.2, ease: 'expo.out' }
+      )
+      .fromTo(".nav-item", 
+        { y: 20, opacity: 0, scale: 0.8 }, 
+        { y: 0, opacity: 1, scale: 1, duration: 0.8, stagger: 0.1, ease: 'power4.out' },
+        "-=0.8"
+      )
+      .fromTo(contentRef.current, 
+        { opacity: 0, scale: 0.99, y: 10 }, 
+        { opacity: 1, scale: 1, y: 0, duration: 1, ease: 'power3.out' },
+        "-=0.6"
+      );
+    }
+  }, [loading]);
 
   // Fetch projects on mount
   useEffect(() => {
@@ -41,109 +75,91 @@ export default function HomeClient() {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-bgLight dark:bg-background-dark">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-bgLight dark:bg-bgDark bg-noise">
+        <div className="relative size-24">
+           <div className="absolute inset-0 rounded-full border-t-2 border-primary animate-spin opacity-50"></div>
+           <div className="absolute inset-4 rounded-full border-b-2 border-primary animate-spin-slow opacity-30"></div>
+           <div className="absolute inset-0 flex items-center justify-center">
+              <div className="size-2 bg-primary rounded-full animate-pulse shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]"></div>
+           </div>
+        </div>
+        <p className="mt-8 text-[10px] font-black text-primary uppercase tracking-[0.5em] animate-pulse">Initializing Streams</p>
       </div>
     );
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col font-display bg-bgLight dark:bg-background-dark text-text-main">
-      {/* Top Navigation Bar */}
-      <div className="relative flex w-full flex-col bg-surface border-b border-border-color z-10 shrink-0">
-        <header className="flex items-center justify-between whitespace-nowrap px-6 py-3">
-          <div className="flex items-center gap-4 text-text-main">
-            <div className="size-6 text-primary">
-              <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+    <div className="h-screen w-screen overflow-hidden flex flex-col font-display bg-bgLight dark:bg-bgDark text-textMain relative selection:bg-primary/20 selection:text-primary">
+      {/* Texture Layer - Antigravity Grain */}
+      <div className="absolute inset-0 bg-noise pointer-events-none z-[100] opacity-[0.03]"></div>
+
+      {/* Top Navigation Bar - Glassmorphism Refined */}
+      <div ref={headerRef} className="glass-header z-50 border-b border-white/5 shadow-2xl">
+        <header className="flex items-center justify-between whitespace-nowrap px-8 py-4">
+          <div className="flex items-center gap-6 group cursor-pointer">
+            <div className="size-10 text-primary bg-primary/5 p-2 rounded-2xl border border-primary/10 group-hover:scale-110 transition-transform duration-700 shadow-inner">
+              <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]">
                 <path d="M13.8261 17.4264C16.7203 18.1174 20.2244 18.5217 24 18.5217C27.7756 18.5217 31.2797 18.5217 34.1739 17.4264C36.9144 16.7722 39.9967 15.2331 41.3563 14.1648L24.8486 40.6391C24.4571 41.267 23.5429 41.267 23.1514 40.6391L6.64374 14.1648C8.00331 15.2331 11.0856 16.7722 13.8261 17.4264Z" fill="currentColor"></path>
-                <path clipRule="evenodd" d="M39.998 12.236C39.9944 12.2537 39.9875 12.2845 39.9748 12.3294C39.9436 12.4399 39.8949 12.5741 39.8346 12.7175C39.8168 12.7597 39.7989 12.8007 39.7813 12.8398C38.5103 13.7113 35.9788 14.9393 33.7095 15.4811C30.9875 16.131 27.6413 16.5217 24 16.5217C20.3587 16.5217 17.0125 16.131 14.2905 15.4811C12.0012 14.9346 9.44505 13.6897 8.18538 12.8168C8.17384 12.7925 8.16216 12.767 8.15052 12.7408C8.09919 12.6249 8.05721 12.5114 8.02977 12.411C8.00356 12.3152 8.00039 12.2667 8.00004 12.2612C8.00004 12.261 8 12.2607 8.00004 12.2612C8.00004 12.2359 8.0104 11.9233 8.68485 11.3686C9.34546 10.8254 10.4222 10.2469 11.9291 9.72276C14.9242 8.68098 19.1919 8 24 8C28.8081 8 33.0758 8.68098 36.0709 9.72276C37.5778 10.2469 38.6545 10.8254 39.3151 11.3686C39.9006 11.8501 39.9857 12.1489 39.998 12.236ZM4.95178 15.2312L21.4543 41.6973C22.6288 43.5809 25.3712 43.5809 26.5457 41.6973L43.0534 15.223C43.0709 15.1948 43.0878 15.1662 43.104 15.1371L41.3563 14.1648C43.104 15.1371 43.1038 15.1374 43.104 15.1371L43.1051 15.135L43.1065 15.1325L43.1101 15.1261L43.1199 15.1082C43.1276 15.094 43.1377 15.0754 43.1497 15.0527C43.1738 15.0075 43.2062 14.9455 43.244 14.8701C43.319 14.7208 43.4196 14.511 43.5217 14.2683C43.6901 13.8679 44 13.0689 44 12.2609C44 10.5573 43.003 9.22254 41.8558 8.2791C40.6947 7.32427 39.1354 6.55361 37.385 5.94477C33.8654 4.72057 29.133 4 24 4C18.867 4 14.1346 4.72057 10.615 5.94478C8.86463 6.55361 7.30529 7.32428 6.14419 8.27911C4.99695 9.22255 3.99999 10.5573 3.99999 12.2609C3.99999 13.1275 4.29264 13.9078 4.49321 14.3607C4.60375 14.6102 4.71348 14.8196 4.79687 14.9689C4.83898 15.0444 4.87547 15.1065 4.9035 15.1529C4.91754 15.1762 4.92954 15.1957 4.93916 15.2111L4.94662 15.223L4.95178 15.2312ZM35.9868 18.996L24 38.22L12.0131 18.996C12.4661 19.1391 12.9179 19.2658 13.3617 19.3718C16.4281 20.1039 20.0901 20.5217 24 20.5217C27.9099 20.5217 31.5719 20.1039 34.6383 19.3718C35.082 19.2658 35.5339 19.1391 35.9868 18.996Z" fill="currentColor" fillRule="evenodd"></path>
+                <circle cx="24" cy="12" r="4" fill="currentColor" className="opacity-40 animate-pulse" />
               </svg>
             </div>
-            <h2 className="text-text-main text-xl font-bold leading-tight tracking-tight">Matrix Energia</h2>
-            <div className="h-6 w-px bg-border-color mx-2"></div>
-            <h1 className="text-text-main text-lg font-semibold">Command Center</h1>
+            <div className="flex flex-col">
+              <h2 className="text-textMain text-xl font-black leading-tight tracking-tighter group-hover:text-primary transition-colors">SyncDash</h2>
+              <p className="text-[9px] font-black text-muted uppercase tracking-[0.3em] opacity-40">Operational Intel • v2.5</p>
+            </div>
           </div>
 
-          {/* Main Navigation Links */}
-          <div className="hidden md:flex items-center gap-6">
-            <button 
-              id="nav-portfolio-management"
-              aria-label="Navigate to Portfolio Management"
-              onClick={() => setCurrentScreen(1)}
-              className={`flex items-center gap-2 px-3 py-2 border-b-2 transition-colors ${currentScreen === 1 ? 'border-primary text-primary' : 'border-transparent text-muted hover:text-text-main'}`}
-            >
-              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: currentScreen === 1 ? "'FILL' 1" : "'FILL' 0" }}>mobile_layout</span>
-              <span className={`text-sm ${currentScreen === 1 ? 'font-bold' : 'font-medium'}`}>Portfolio Management</span>
-            </button>
-            <button 
-              id="nav-phases-progress"
-              aria-label="Navigate to Phases and Progress"
-              onClick={() => setCurrentScreen(2)}
-              className={`flex items-center gap-2 px-3 py-2 border-b-2 transition-colors ${currentScreen === 2 ? 'border-primary text-primary' : 'border-transparent text-muted hover:text-text-main'}`}
-            >
-              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: currentScreen === 2 ? "'FILL' 1" : "'FILL' 0" }}>trending_up</span>
-              <span className={`text-sm ${currentScreen === 2 ? 'font-bold' : 'font-medium'}`}>Phases & Progress</span>
-            </button>
-            <button 
-              id="nav-media-gallery"
-              aria-label="Navigate to Media Gallery"
-              onClick={() => setCurrentScreen(3)}
-              className={`flex items-center gap-2 px-3 py-2 border-b-2 transition-colors ${currentScreen === 3 ? 'border-primary text-primary' : 'border-transparent text-muted hover:text-text-main'}`}
-            >
-              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: currentScreen === 3 ? "'FILL' 1" : "'FILL' 0" }}>image</span>
-              <span className={`text-sm ${currentScreen === 3 ? 'font-bold' : 'font-medium'}`}>Media Gallery</span>
-            </button>
-            <button 
-              id="nav-real-time-monitoring"
-              aria-label="Navigate to Real-time Monitoring"
-              onClick={() => setCurrentScreen(4)}
-              className={`flex items-center gap-2 px-3 py-2 border-b-2 transition-colors ${currentScreen === 4 ? 'border-primary text-primary' : 'border-transparent text-muted hover:text-text-main'}`}
-            >
-              <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: currentScreen === 4 ? "'FILL' 1" : "'FILL' 0" }}>video_camera_front</span>
-              <span className={`text-sm ${currentScreen === 4 ? 'font-bold' : 'font-medium'}`}>Real-time Monitoring</span>
-            </button>
-          </div>
+          {/* Main Navigation - Weightless Items */}
+          <nav ref={navRef} className="hidden lg:flex items-center gap-2 glass-card p-1.5 rounded-2xl border-white/5 bg-white/[0.02]">
+            {[
+              { id: 1, label: 'Portfolio', icon: <LayoutDashboard className="size-4" /> },
+              { id: 2, label: 'Analytics', icon: <BarChart3 className="size-4" /> },
+              { id: 3, label: 'Gallery', icon: <ImageIcon className="size-4" /> },
+              { id: 4, label: 'Live Ops', icon: <Activity className="size-4" /> }
+            ].map((item) => (
+              <button 
+                key={item.id}
+                onClick={() => setCurrentScreen(item.id as any)}
+                className={`nav-item flex items-center gap-3 px-6 py-2.5 rounded-xl transition-all duration-500 group relative ${currentScreen === item.id ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-105' : 'text-muted hover:text-textMain hover:bg-white/5'}`}
+              >
+                <span className={`${currentScreen === item.id ? 'opacity-100' : 'opacity-40 group-hover:opacity-100'} transition-opacity`}>
+                   {item.icon}
+                </span>
+                <span className={`text-[11px] font-black uppercase tracking-widest ${currentScreen === item.id ? 'opacity-100' : 'opacity-40 group-hover:opacity-100'}`}>
+                   {item.label}
+                </span>
+                {currentScreen === item.id && (
+                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 size-1 bg-white rounded-full shadow-[0_0_8px_#fff]"></span>
+                )}
+              </button>
+            ))}
+          </nav>
 
-          {/* User Actions */}
-          <div className="flex items-center gap-4">
-            <button 
-              id="btn-notifications"
-              aria-label="View notifications"
-              className="text-muted hover:text-text-main transition-colors"
-            >
-              <span className="material-symbols-outlined text-2xl">notifications</span>
+          <div className="flex items-center gap-6">
+            <div className="hidden sm:flex items-center gap-2 glass-card px-4 py-2 rounded-xl border-white/5 bg-white/[0.01] hover:bg-white/5 transition-all group cursor-text">
+               <Search className="size-4 text-muted group-hover:text-primary transition-colors" />
+               <span className="text-[10px] font-black text-muted uppercase tracking-widest opacity-30">Search Node</span>
+            </div>
+            <button className="nav-item relative p-2 rounded-xl hover:bg-white/5 transition-all text-muted hover:text-primary">
+              <Bell className="size-5" />
+              <span className="absolute top-2 right-2 size-2 bg-error rounded-full border-2 border-bgLight dark:border-bgDark shadow-[0_0_8px_rgba(239,68,68,0.5)]"></span>
             </button>
-            <div className="bg-border-color bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQ5KgIPS-u96q5iV_htI9It2o_EEe8cWbROUM_yrP3Gwr2VKxuo7fyOB206e2bUFVw5043YitS2wWQoGnPKJJvvOT6v6RvhSpv3sZMo40ON94MrRieU7g3-js-tWPeU9APDuOCL09ScrtiUQSWpRgHp72JLZo3xh-Et9osr69jEIXZ_dlvZn8QuOmXThsrTCyVHSvVDf4V3J4DkbF2AFURye67Y1lwf33mTg1RrXtVK8aKesfh5QwibJETmmez9N2FWUqJco1Txbaw")' }}></div>
+            <div className="nav-item group cursor-pointer relative p-1 rounded-full border border-white/5 hover:border-primary/40 transition-all duration-700">
+               <div className="bg-borderColor bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 grayscale group-hover:grayscale-0 transition-all duration-700 shadow-2xl" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAQ5KgIPS-u96q5iV_htI9It2o_EEe8cWbROUM_yrP3Gwr2VKxuo7fyOB206e2bUFVw5043YitS2wWQoGnPKJJvvOT6v6RvhSpv3sZMo40ON94MrRieU7g3-js-tWPeU9APDuOCL09ScrtiUQSWpRgHp72JLZo3xh-Et9osr69jEIXZ_dlvZn8QuOmXThsrTCyVHSvVDf4V3J4DkbF2AFURye67Y1lwf33mTg1RrXtVK8aKesfh5QwibJETmmez9N2FWUqJco1Txbaw")' }}></div>
+               <div className="absolute -bottom-1 -right-1 size-3 bg-success rounded-full border-2 border-bgLight dark:border-bgDark shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+            </div>
+            <button className="lg:hidden p-2 text-muted hover:text-textMain"><Menu className="size-6" /></button>
           </div>
         </header>
       </div>
 
-      {/* Main Layout Area */}
-      <div className="flex flex-1 overflow-hidden">
+      {/* Main Layout Area - Spatial Perspective */}
+      <div ref={contentRef} className="flex flex-1 overflow-hidden relative perspective-2000">
         <ErrorBoundary>
-          {/* Screen 1: Portfolio Management */}
-          {currentScreen === 1 && (
-            <Dashboard 
-              projects={projects} 
-              selectedProject={selectedProject} 
-              onSelectProject={setSelectedProject} 
-            />
-          )}
-
-          {/* Screen 2: Phases & Progress */}
-          {currentScreen === 2 && (
-            <Screen2 selectedProject={selectedProject} />
-          )}
-
-          {/* Screen 3: Media Gallery */}
-          {currentScreen === 3 && (
-            <Screen3 selectedProject={selectedProject} />
-          )}
-
-          {/* Screen 4: Real-time Monitoring */}
-          {currentScreen === 4 && (
-            <Screen4 selectedProject={selectedProject} />
-          )}
+          {currentScreen === 1 && <Dashboard projects={projects} selectedProject={selectedProject} onSelectProject={setSelectedProject} />}
+          {currentScreen === 2 && <Screen2 selectedProject={selectedProject} />}
+          {currentScreen === 3 && <Screen3 selectedProject={selectedProject} />}
+          {currentScreen === 4 && <Screen4 selectedProject={selectedProject} />}
         </ErrorBoundary>
       </div>
     </div>

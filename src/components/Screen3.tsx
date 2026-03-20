@@ -1,5 +1,23 @@
 import { PortfolioMaster } from '../types';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useGSAP } from '../hooks/useGSAP';
+import gsap from 'gsap';
+import { 
+  LayoutGrid, 
+  Clock, 
+  Package, 
+  Map, 
+  FolderPlus, 
+  Filter, 
+  CloudUpload, 
+  Image as ImageIcon, 
+  Video, 
+  CheckCircle2, 
+  AlertCircle,
+  Eye,
+  Download,
+  Database
+} from 'lucide-react';
 
 interface Screen3Props {
   selectedProject: PortfolioMaster | null;
@@ -7,20 +25,36 @@ interface Screen3Props {
 
 export default function Screen3({ selectedProject }: Screen3Props) {
   const [activeFolder, setActiveFolder] = useState('All Assets');
+  const containerRef = useRef(null);
+
+  // Antigravity GSAP Stagger
+  useGSAP(() => {
+    if (selectedProject) {
+      const tl = gsap.timeline();
+      tl.fromTo(".asset-card", 
+        { y: 30, opacity: 0, scale: 0.9, rotateY: 15 }, 
+        { y: 0, opacity: 1, scale: 1, rotateY: 0, duration: 0.7, stagger: 0.08, ease: 'power3.out' }
+      );
+    }
+  }, [selectedProject, activeFolder]);
 
   if (!selectedProject) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-bgLight text-muted italic">
-        Select a project from the Portfolio to view media assets.
+      <div className="flex-1 flex flex-col items-center justify-center bg-bgLight/30 backdrop-blur-sm p-12 text-center bg-noise">
+        <div className="size-24 rounded-full bg-muted/5 flex items-center justify-center mb-6 border border-white/5 shadow-inner animate-pulse">
+          <Database className="size-10 text-muted/30" />
+        </div>
+        <h3 className="text-2xl font-black text-textMain tracking-tighter opacity-80">Media Vault Locked</h3>
+        <p className="text-muted max-w-sm mx-auto text-sm italic opacity-50 mt-2">Authentication with a project stream is required to access encrypted site media and records.</p>
       </div>
     );
   }
 
   const folders = [
-    { name: 'All Assets', icon: 'grid_view', count: 124 },
-    { name: 'Recent Week', icon: 'schedule', count: 12 },
-    { name: 'Equipment', icon: 'inventory_2', count: 45 },
-    { name: 'Site Progress', icon: 'foundation', count: 67 },
+    { name: 'All Assets', icon: <LayoutGrid className="size-4" />, count: 124 },
+    { name: 'Recent Week', icon: <Clock className="size-4" />, count: 12 },
+    { name: 'Equipment', icon: <Package className="size-4" />, count: 45 },
+    { name: 'Site Progress', icon: <Map className="size-4" />, count: 67 },
   ];
 
   const assets = [
@@ -32,135 +66,146 @@ export default function Screen3({ selectedProject }: Screen3Props) {
     { id: 6, type: 'image', status: 'pending', date: '2024-03-12', label: 'IMG_4825.jpg' },
     { id: 7, type: 'image', status: 'verified', date: '2024-03-12', label: 'IMG_4824.jpg' },
     { id: 8, type: 'image', status: 'verified', date: '2024-03-11', label: 'IMG_4823.jpg' },
+    { id: 9, type: 'image', status: 'verified', date: '2024-03-10', label: 'IMG_4822.jpg' },
+    { id: 10, type: 'video', status: 'verified', date: '2024-03-09', label: 'SITE_TIME_LAPSE.mp4' },
+    { id: 11, type: 'image', status: 'verified', date: '2024-03-08', label: 'IMG_4821.jpg' },
+    { id: 12, type: 'image', status: 'verified', date: '2024-03-08', label: 'IMG_4820.jpg' },
   ];
 
   return (
-    <>
-      {/* Media Sidebar (30%) */}
-      <aside className="w-[30%] bg-surface border-r border-border-color flex flex-col h-full overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-lg font-bold text-text-main">Media Library</h3>
-            <button 
-              id="btn-new-folder"
-              aria-label="Create new folder"
-              className="material-symbols-outlined text-muted hover:text-primary transition-colors"
-            >
-              create_new_folder
+    <div ref={containerRef} className="flex-1 flex flex-col md:flex-row h-full overflow-hidden relative">
+      <div className="absolute inset-0 bg-noise opacity-[0.03] pointer-events-none" />
+      
+      {/* Media Sidebar (30%) - Glassmorphic Navigation */}
+      <aside className="w-full md:w-[320px] bg-surface/40 backdrop-blur-2xl border-r border-white/5 flex flex-col h-full z-10">
+        <div className="p-8">
+          <div className="flex justify-between items-center mb-10">
+            <h3 className="text-sm font-black text-textMain uppercase tracking-[0.3em]">Project Vault</h3>
+            <button className="p-2 rounded-xl bg-white/5 border border-white/5 text-muted hover:text-primary transition-all">
+              <FolderPlus className="size-4" />
             </button>
           </div>
           
-          <nav className="space-y-1">
+          <nav className="space-y-2">
             {folders.map(folder => (
               <button
                 key={folder.name}
-                id={`btn-folder-${folder.name.replace(/\s+/g, '-').toLowerCase()}`}
-                aria-label={`Open folder ${folder.name}`}
                 onClick={() => setActiveFolder(folder.name)}
-                className={`w-full flex items-center justify-between p-3 rounded-md transition-all group ${activeFolder === folder.name ? 'bg-primary/5 text-primary' : 'text-muted hover:bg-bgLight hover:text-text-main'}`}
+                className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-500 group relative overflow-hidden ${activeFolder === folder.name ? 'bg-primary/10 text-primary shadow-inner' : 'text-muted hover:text-textMain hover:bg-white/5'}`}
               >
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[20px]">{folder.icon}</span>
-                  <span className="text-sm font-bold uppercase tracking-wider">{folder.name}</span>
+                {activeFolder === folder.name && <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-full" />}
+                <div className="flex items-center gap-4">
+                  <span className={`transition-transform duration-500 ${activeFolder === folder.name ? 'scale-110' : 'group-hover:scale-110'}`}>{folder.icon}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">{folder.name}</span>
                 </div>
-                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${activeFolder === folder.name ? 'bg-primary/20 text-primary' : 'bg-bgLight text-muted group-hover:bg-border-color'}`}>
+                <span className={`text-[9px] font-black px-2.5 py-1 rounded-full transition-all duration-500 ${activeFolder === folder.name ? 'bg-primary text-white shadow-lg' : 'bg-white/5 text-muted group-hover:bg-white/10'}`}>
                   {folder.count}
                 </span>
               </button>
             ))}
           </nav>
 
-          <div className="mt-12 pt-8 border-t border-border-color">
-            <h4 className="text-xs font-bold text-muted uppercase tracking-widest mb-4 px-3">Storage Details</h4>
-            <div className="px-3 space-y-4">
-              <div className="flex justify-between text-xs font-medium mb-1">
-                <span className="text-muted">Used Space</span>
-                <span className="text-text-main">12.4 GB / 100 GB</span>
+          <div className="mt-20 pt-10 border-t border-white/5">
+            <h4 className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-6 opacity-40">Network Storage</h4>
+            <div className="space-y-5">
+              <div className="flex justify-between items-end">
+                <span className="text-[10px] font-black text-muted uppercase tracking-widest">Efficiency</span>
+                <span className="text-xl font-black text-textMain tabular-nums">12.4<span className="text-xs opacity-30 ml-1">GB</span></span>
               </div>
-              <div className="w-full bg-bgLight rounded-full h-2 overflow-hidden">
-                <div className="bg-primary h-full rounded-full" style={{ width: '12.4%' }}></div>
+              <div className="w-full bg-white/5 rounded-full h-1.5 overflow-hidden shadow-inner">
+                <div className="bg-gradient-to-r from-primary/40 to-primary h-full rounded-full shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" style={{ width: '12.4%' }} />
               </div>
+              <p className="text-[8px] font-bold text-muted/30 italic uppercase">Uplink active • 87.6GB available</p>
             </div>
           </div>
         </div>
       </aside>
 
-      {/* Main Content Area (70%) */}
-      <main className="w-[70%] flex flex-col h-full overflow-hidden bg-bgLight">
-        {/* Gallery Header */}
-        <div className="p-6 border-b border-border-color flex justify-between items-center shrink-0 bg-surface">
+      {/* Main Content Area (Gallery) */}
+      <main className="flex-1 flex flex-col h-full overflow-hidden bg-bgLight/20 relative">
+        {/* Gallery Header - Floating blur */}
+        <div className="p-8 border-b border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6 z-20 bg-surface/20 backdrop-blur-xl">
           <div>
-            <h1 className="text-2xl font-bold text-text-main">{activeFolder}</h1>
-            <p className="text-sm text-muted">{selectedProject.projeto} • {folders.find(f => f.name === activeFolder)?.count || 0} Assets</p>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="size-2 rounded-full bg-primary animate-pulse" />
+              <h1 className="text-2xl font-black text-textMain tracking-tighter">{activeFolder}</h1>
+            </div>
+            <p className="text-[10px] font-black text-muted uppercase tracking-widest opacity-50">
+              {selectedProject.projeto} • <span className="text-primary">{assets.length}</span> Objects localized
+            </p>
           </div>
-          <div className="flex gap-3">
-            <button 
-              id="btn-gallery-filters"
-              aria-label="Toggle gallery filters"
-              className="flex items-center gap-2 bg-surface text-text-main border border-border-color px-4 py-2 rounded-md text-sm font-bold hover:bg-bgLight transition-all"
-            >
-              <span className="material-symbols-outlined text-[18px]">filter_list</span>
-              Filters
+          
+          <div className="flex gap-4">
+            <button className="flex items-center gap-3 glass-card bg-white/5 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all border-white/5">
+              <Filter className="size-3.5" />
+              Categorize
             </button>
-            <button 
-              id="btn-upload-assets"
-              aria-label="Upload new media assets"
-              className="flex items-center gap-2 bg-primary text-white border border-primary px-4 py-2 rounded-md text-sm font-bold hover:bg-primary/90 transition-all shadow-sm shadow-primary/20"
-            >
-              <span className="material-symbols-outlined text-[18px]">cloud_upload</span>
-              Upload Assets
+            <button className="flex items-center gap-3 bg-primary text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:shadow-[0_12px_24px_rgba(var(--primary-rgb),0.3)] hover:-translate-y-1 transition-all duration-500 shadow-xl shadow-primary/10">
+              <CloudUpload className="size-3.5" />
+              Inject Media
             </button>
           </div>
         </div>
 
-        {/* Gallery Grid */}
-        <div className="flex-1 overflow-y-auto p-6">
-          <div className="grid grid-cols-4 gap-6">
+        {/* Gallery Grid - Responsive & Weighted */}
+        <div className="flex-1 overflow-y-auto p-10 scrollbar-hide perspective-1000">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {assets.map(asset => (
-              <div key={asset.id} className="bg-surface border border-border-color rounded-md overflow-hidden group hover:border-primary transition-all flex flex-col">
-                <div className="aspect-square bg-bgLight relative overflow-hidden flex items-center justify-center mb-2">
-                  {/* Mock Content Placeholder */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent"></div>
-                  <span className="material-symbols-outlined text-muted/20 text-[64px] group-hover:scale-110 transition-transform duration-500">
-                    {asset.type === 'image' ? 'image' : 'smart_display'}
-                  </span>
-                  
-                  {/* Status Badge Overlay */}
-                  <div className="absolute top-2 right-2">
-                    <span className={`flex items-center justify-center p-1 rounded-full shadow-sm ${asset.status === 'verified' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                      <span className="material-symbols-outlined text-[14px]">
-                        {asset.status === 'verified' ? 'verified' : 'pending'}
-                      </span>
-                    </span>
+              <div key={asset.id} className="asset-card group relative">
+                <div className="glass-card rounded-[2rem] p-4 border-white/5 bg-white/[0.03] group-hover:bg-white/[0.08] transition-all duration-700 shadow-2xl flex flex-col overflow-hidden h-[340px]">
+                  <div className="flex-1 bg-black/10 rounded-[1.5rem] relative overflow-hidden flex items-center justify-center mb-4 inner-shadow group/img">
+                    {/* Visual Placeholder with spatial depth */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-40" />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      {asset.type === 'image' ? (
+                        <ImageIcon className="size-16 text-muted/10 group-hover/img:scale-125 transition-transform duration-1000 group-hover/img:text-primary/20" />
+                      ) : (
+                        <Video className="size-16 text-muted/10 group-hover/img:scale-125 transition-transform duration-1000 group-hover/img:text-primary/20" />
+                      )}
+                    </div>
+                    
+                    {/* Status Badge Overlay */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <div className={`p-2 rounded-xl backdrop-blur-md border border-white/10 shadow-lg ${asset.status === 'verified' ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning'}`}>
+                        {asset.status === 'verified' ? <CheckCircle2 className="size-3.5" /> : <AlertCircle className="size-3.5" />}
+                      </div>
+                    </div>
+
+                    {/* Interaction Overlay - Weighted Depth */}
+                    <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover/img:opacity-100 transition-all duration-700 backdrop-blur-sm flex items-center justify-center gap-6 translate-y-4 group-hover/img:translate-y-0">
+                      <button className="size-12 rounded-2xl bg-white text-primary flex items-center justify-center shadow-2xl hover:scale-110 transition-transform hover:bg-primary hover:text-white duration-500">
+                        <Eye className="size-5" />
+                      </button>
+                      <button className="size-12 rounded-2xl bg-white text-primary flex items-center justify-center shadow-2xl hover:scale-110 transition-transform hover:bg-primary hover:text-white duration-500">
+                        <Download className="size-5" />
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Hover Actions Overlay */}
-                  <div className="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-                    <button 
-                      id={`btn-view-asset-${asset.id}`}
-                      aria-label={`View asset ${asset.label}`}
-                      className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
-                    >
-                      <span className="material-symbols-outlined">visibility</span>
-                    </button>
-                    <button 
-                      id={`btn-download-asset-${asset.id}`}
-                      aria-label={`Download asset ${asset.label}`}
-                      className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
-                    >
-                      <span className="material-symbols-outlined">file_download</span>
-                    </button>
+                  <div className="px-3 pb-2 flex justify-between items-center">
+                    <div className="max-w-[70%]">
+                      <p className="text-[10px] font-black text-textMain truncate tracking-tight">{asset.label}</p>
+                      <p className="text-[8px] font-black text-muted uppercase tracking-[0.2em] opacity-40">{asset.date}</p>
+                    </div>
+                    <div className="p-1 px-2 rounded-lg bg-white/5 border border-white/5">
+                      <span className="text-[8px] font-black text-muted uppercase tracking-widest">{asset.type}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="p-3 border-t border-border-color">
-                  <p className="text-xs font-bold text-text-main truncate mb-1">{asset.label}</p>
-                  <p className="text-[10px] text-muted font-bold uppercase tracking-tighter">{asset.date}</p>
+                  
+                  {/* Subtle progress indicator for "uploads" or "verification" */}
+                  <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent w-full opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               </div>
             ))}
           </div>
+          
+          {/* Final Row Spatial Tip */}
+          <div className="mt-20 text-center opacity-20 hover:opacity-40 transition-opacity duration-1000">
+            <p className="text-[10px] font-black uppercase tracking-[1em] mb-4">Historical Archive Terminus</p>
+            <div className="h-20 w-px bg-gradient-to-b from-muted to-transparent mx-auto" />
+          </div>
         </div>
       </main>
-    </>
+    </div>
   );
 }

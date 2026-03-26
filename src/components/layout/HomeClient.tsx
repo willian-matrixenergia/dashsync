@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useGSAP } from '@/src/hooks/useGSAP';
 import gsap from 'gsap';
 import Image from 'next/image';
@@ -51,6 +52,7 @@ const TV_INTERVAL_SECONDS = 15;
 
 export default function HomeClient() {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const [activeTabIndex, setActiveTabIndex] = useState(1);
   const [tvMode, setTvMode] = useState(false);
   const [tvSlideIndex, setTvSlideIndex] = useState(0);
@@ -62,6 +64,12 @@ export default function HomeClient() {
 
   const activeTab = NAV_ITEMS[activeTabIndex].id;
   const currentTvSlide = TV_SLIDES[tvSlideIndex];
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
 
   const goToNextTvSlide = useCallback(() => {
     setTvSlideIndex((prev) => (prev + 1) % TV_SLIDES.length);
@@ -148,7 +156,7 @@ export default function HomeClient() {
     }
   }, [status]);
 
-  if (status === 'loading') {
+  if (status === 'loading' || status === 'unauthenticated') {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">

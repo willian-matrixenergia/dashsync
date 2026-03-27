@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   // CORRECTED: Allow connections from the Cloud Workstation on port 9000
   allowedDevOrigins: ['9000-firebase-gestaokpis-1774554741726.cluster-r7kbxfo3fnev2vskbkhhphetq6.cloudworkstations.dev'],
   async headers() {

@@ -292,22 +292,15 @@ export function PPAModule({ data }: PPAModuleProps) {
           <p className="text-[9px] text-white/50 uppercase tracking-[0.2em] mb-3 font-bold">
             Atingimento Anual
           </p>
-          <div className="flex items-start justify-between relative mb-1">
-            <div className="flex flex-col">
-              <p className="text-3xl lg:text-4xl font-bold text-primary tabular-nums tracking-tighter">
-                {totalAtingimentoAnual}%
-              </p>
-              <p className="text-[10px] text-white/50 font-medium">
-                de R$ {totalTargetAnual.toLocaleString('pt-BR')}k
-              </p>
-            </div>
-            <div className="absolute left-[6%] top-[-8px] flex flex-col items-center">
-              <span className="text-[9px] text-primary font-bold mb-1">6%</span>
-              <div className="w-px h-8 border-l border-dashed border-primary" />
-            </div>
+          <div className="flex flex-col mb-1">
+            <p className="text-3xl lg:text-4xl font-bold text-primary tabular-nums tracking-tighter">
+              {totalAtingimentoAnual}%
+            </p>
+            <p className="text-[10px] text-white/50 font-medium">
+              de R$ {totalTargetAnual.toLocaleString('pt-BR')}k
+            </p>
           </div>
-          <div className="w-full h-4 bg-[#2A3437] rounded-none relative mt-2">
-            <div className="absolute left-[6%] top-[-4px] bottom-[-4px] w-0.5 bg-primary z-20 shadow-[0_0_5px_rgba(255,107,0,0.8)]" />
+          <div className="w-full h-4 bg-[#2A3437] rounded-none overflow-hidden relative mt-2">
             <div
               className="h-full bg-primary z-10 shadow-[0_0_10px_rgba(255,107,0,0.5)]"
               style={{ width: `${progressAnual}%` }}

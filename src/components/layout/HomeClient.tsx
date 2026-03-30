@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/src/components/ui/theme-toggle';
 import {
   Zap, TrendingUp, BarChart3, Cpu, LogOut, Sun,
-  Play, Pause, Tv2, ChevronLeft, ChevronRight,
+  Play, Pause, Tv2, ChevronLeft, ChevronRight, X,
 } from 'lucide-react';
 
 import { GDModule } from '@/src/components/modules/gd/GDModule';
@@ -55,12 +55,13 @@ export default function HomeClient() {
   const router = useRouter();
   const [activeTabIndex, setActiveTabIndex] = useState(1);
   const [tvMode, setTvMode] = useState(false);
+  const [isTvPaused, setIsTvPaused] = useState(false);
+  const [timerKey, setTimerKey] = useState(0);
   const [tvSlideIndex, setTvSlideIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
 
   const activeTab = NAV_ITEMS[activeTabIndex].id;
   const currentTvSlide = TV_SLIDES[tvSlideIndex];
@@ -73,75 +74,45 @@ export default function HomeClient() {
 
   const goToNextTvSlide = useCallback(() => {
     setTvSlideIndex((prev) => (prev + 1) % TV_SLIDES.length);
-    setProgress(0);
+    setTimerKey((k) => k + 1);
   }, []);
 
-  const goToPrevTvSlide = useCallback(() => {
-    setTvSlideIndex((prev) => (prev - 1 + TV_SLIDES.length) % TV_SLIDES.length);
-    setProgress(0);
+  const enterTvMode = useCallback(() => {
+    setTvMode(true);
+    setIsTvPaused(false);
+    setTvSlideIndex(0);
+    setTimerKey(0);
+    try {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    } catch (e) {}
   }, []);
 
-  // Gerencia o ciclo automático quando TV Mode está ativo
+  const exitTvMode = useCallback(() => {
+    setTvMode(false);
+    setIsTvPaused(false);
+    try {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    } catch (e) {}
+  }, []);
+
+  // Handle ESC key to exit TV mode
   useEffect(() => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    if (progressRef.current) clearInterval(progressRef.current);
-
-    if (tvMode) {
-      setTvSlideIndex(0);
-      setProgress(0);
-
-      const TICK_MS = 100;
-      progressRef.current = setInterval(() => {
-        setProgress((prev) => {
-          const next = prev + (TICK_MS / (TV_INTERVAL_SECONDS * 1000)) * 100;
-          return next >= 100 ? 100 : next;
-        });
-      }, TICK_MS);
-
-      intervalRef.current = setInterval(goToNextTvSlide, TV_INTERVAL_SECONDS * 1000);
-    }
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (progressRef.current) clearInterval(progressRef.current);
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && tvMode) {
+        exitTvMode();
+      }
     };
-  }, [tvMode, goToNextTvSlide]);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, [tvMode, exitTvMode]);
 
-  // Reseta o timer quando muda de slide manualmente
-  const handleManualPrev = useCallback(() => {
-    goToPrevTvSlide();
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    if (progressRef.current) clearInterval(progressRef.current);
-    if (tvMode) {
-      const TICK_MS = 100;
-      progressRef.current = setInterval(() => {
-        setProgress((prev) => {
-          const next = prev + (TICK_MS / (TV_INTERVAL_SECONDS * 1000)) * 100;
-          return next >= 100 ? 100 : next;
-        });
-      }, TICK_MS);
-      intervalRef.current = setInterval(goToNextTvSlide, TV_INTERVAL_SECONDS * 1000);
-    }
-  }, [tvMode, goToPrevTvSlide, goToNextTvSlide]);
-
-  const handleManualNext = useCallback(() => {
-    goToNextTvSlide();
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    if (progressRef.current) clearInterval(progressRef.current);
-    if (tvMode) {
-      const TICK_MS = 100;
-      progressRef.current = setInterval(() => {
-        setProgress((prev) => {
-          const next = prev + (TICK_MS / (TV_INTERVAL_SECONDS * 1000)) * 100;
-          return next >= 100 ? 100 : next;
-        });
-      }, TICK_MS);
-      intervalRef.current = setInterval(goToNextTvSlide, TV_INTERVAL_SECONDS * 1000);
-    }
-  }, [tvMode, goToNextTvSlide]);
-
+  // GSAP animations for the initial load and the TV progress bar
   useGSAP(() => {
-    if (status === 'authenticated') {
+    if (status === 'authenticated' && headerRef.current) {
       const tl = gsap.timeline();
       tl.fromTo(
         headerRef.current,
@@ -155,6 +126,44 @@ export default function HomeClient() {
       );
     }
   }, [status]);
+
+  useGSAP(() => {
+    if (tvMode && progressBarRef.current) {
+      if (tweenRef.current) {
+        tweenRef.current.kill();
+      }
+      gsap.set(progressBarRef.current, { scaleX: 0, transformOrigin: 'left center' });
+      
+      tweenRef.current = gsap.to(progressBarRef.current, {
+        scaleX: 1,
+        duration: TV_INTERVAL_SECONDS,
+        ease: 'none',
+        onComplete: goToNextTvSlide,
+      });
+
+      if (isTvPaused) {
+        tweenRef.current.pause();
+      }
+    }
+  }, [tvMode, tvSlideIndex, timerKey]);
+
+  useEffect(() => {
+    if (tweenRef.current) {
+      if (isTvPaused) tweenRef.current.pause();
+      else tweenRef.current.play();
+    }
+  }, [isTvPaused]);
+
+  // Reseta o timer quando muda de slide manualmente
+  const handleManualPrev = useCallback(() => {
+    setTvSlideIndex((prev) => (prev - 1 + TV_SLIDES.length) % TV_SLIDES.length);
+    setTimerKey((prev) => prev + 1);
+  }, []);
+
+  const handleManualNext = useCallback(() => {
+    setTvSlideIndex((prev) => (prev + 1) % TV_SLIDES.length);
+    setTimerKey((prev) => prev + 1);
+  }, []);
 
   if (status === 'loading' || status === 'unauthenticated') {
     return (
@@ -174,10 +183,10 @@ export default function HomeClient() {
 
       {/* ─── Barra de progresso do modo TV ─── */}
       {tvMode && (
-        <div className="fixed top-0 left-0 right-0 z-[100] h-[3px] bg-background">
+        <div className="fixed top-0 left-0 right-0 z-[100] h-1 bg-background">
           <div
-            className="h-full bg-primary transition-none"
-            style={{ width: `${progress}%` }}
+            ref={progressBarRef}
+            className="h-full bg-primary origin-left scale-x-0"
           />
         </div>
       )}
@@ -253,7 +262,7 @@ export default function HomeClient() {
                   {TV_SLIDES.map((slide, idx) => (
                     <button
                       key={idx}
-                      onClick={() => { setTvSlideIndex(idx); setProgress(0); }}
+                      onClick={() => { setTvSlideIndex(idx); setTimerKey((prev) => prev + 1); }}
                       title={slide.label}
                       className={cn(
                         'rounded-full transition-all duration-300 flex-shrink-0',
@@ -279,31 +288,38 @@ export default function HomeClient() {
 
           <div className="flex items-center gap-3">
             {/* Toggle TV Mode */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTvMode((prev) => !prev)}
-              className={cn(
-                'transition-all',
-                tvMode ? 'text-primary bg-primary/10 hover:bg-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-              )}
-              title={tvMode ? 'Desativar Modo TV' : 'Ativar Modo TV (rotação automática)'}
-            >
-              {tvMode ? <Pause className="size-4" /> : <Play className="size-4" />}
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTvMode((prev) => !prev)}
-              className={cn(
-                'transition-all',
-                tvMode ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-              )}
-              title="Modo TV"
-            >
-              <Tv2 className="size-4" />
-            </Button>
+            {tvMode ? (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsTvPaused((prev) => !prev)}
+                  className="rounded-full p-2 bg-white/10 hover:bg-[#FF4A00]/20 text-muted-foreground hover:text-foreground transition-all"
+                  title={isTvPaused ? 'Retomar reprodução' : 'Pausar reprodução'}
+                >
+                  {isTvPaused ? <Play className="size-4" /> : <Pause className="size-4" />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={exitTvMode}
+                  className="rounded-full p-2 hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition-all"
+                  title="Sair do Modo TV"
+                >
+                  <X className="size-4" />
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={enterTvMode}
+                className="text-muted-foreground hover:text-[#FF4A00] transition-colors"
+                title="Ativar Modo TV (Fullscreen)"
+              >
+                <Tv2 className="size-4" />
+              </Button>
+            )}
 
             <ThemeToggle />
 

@@ -18,19 +18,25 @@ interface BitcoinModuleProps {
 }
 
 export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
-  // Hack to ensure we have actual 0 data points to render "0,0" strings for January instead of ignoring it
-  const mappedEvolution = evolution.map((item, index) => {
-    // If it's january, make sure we have budget to render the floating zero
-    if (index === 0) {
-      return {
-        ...item,
-        btcBudget: item.btcBudget === 0 ? 0.0001 : item.btcBudget,
-        hashrateBudget: item.hashrateBudget === 0 ? 0.0001 : item.hashrateBudget,
-        uptime: item.uptime === 0 ? 0.0001 : item.uptime,
-        consumoBudget: item.consumoBudget === 0 ? 0.0001 : item.consumoBudget,
-      };
-    }
-    return item;
+  // Hack: Inserir uma base mínima visual para valores zerados, garantindo a "régua" inferior.
+  const mappedEvolution = evolution.map((item) => {
+    // uptime vem do mock apenas como 'uptime' usado no budget. Criamos um 'uptimeReal' zerado para ilustrar o Actual.
+    const uptimeReal = 0;
+
+    return {
+      ...item,
+      // Actuals (Laranja)
+      btcMinados: item.btcMinados === 0 ? 0.05 : item.btcMinados,
+      uptimeReal: uptimeReal === 0 ? 1.5 : uptimeReal,
+      hashrate: item.hashrate === 0 ? 0.005 : item.hashrate,
+      consumo: item.consumo === 0 ? 10 : item.consumo,
+      
+      // Budgets (Cinza)
+      btcBudget: item.btcBudget === 0 ? 0.05 : item.btcBudget,
+      uptime: item.uptime === 0 ? 1.5 : item.uptime,
+      hashrateBudget: item.hashrateBudget === 0 ? 0.005 : item.hashrateBudget,
+      consumoBudget: item.consumoBudget === 0 ? 10 : item.consumoBudget,
+    };
   });
 
   // Configuração padrão para a legenda idêntica à imagem
@@ -88,11 +94,12 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={false} domain={[0, 4]} />
                   <Legend content={renderLegend} />
                   
-                  {/* Actual não tem dados visuais neste mockup, renderizamos escondido caso no futuro tenha */}
-                  <Bar dataKey="btcMinadosX" fill="#D95B00" maxBarSize={12} isAnimationActive={false} />
+                  <Bar dataKey="btcMinados" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
+                    <LabelList dataKey="btcMinados" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.05 ? '' : Number(v).toFixed(1).replace('.', ',')} />
+                  </Bar>
                   
                   <Bar dataKey="btcBudget" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="btcBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '0,0' : Number(v).toFixed(1).replace('.', ',')} />
+                    <LabelList dataKey="btcBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.05 ? '0,0' : Number(v).toFixed(1).replace('.', ',')} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -114,10 +121,12 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={false} domain={[0, 120]} />
                   <Legend content={renderLegend} />
                   
-                  <Bar dataKey="uptimeX" fill="#D95B00" maxBarSize={12} isAnimationActive={false} />
+                  <Bar dataKey="uptimeReal" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
+                    <LabelList dataKey="uptimeReal" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 1.5 ? '' : `${Number(v).toFixed(1).replace('.', ',')}%`} />
+                  </Bar>
                   
                   <Bar dataKey="uptime" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="uptime" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '0,0%' : `${Number(v).toFixed(1).replace('.', ',')}%`} />
+                    <LabelList dataKey="uptime" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 1.5 ? '0,0%' : `${Number(v).toFixed(1).replace('.', ',')}%`} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -139,10 +148,12 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={false} domain={[0, 0.3]} />
                   <Legend content={renderLegend} />
                   
-                  <Bar dataKey="hashrateX" fill="#D95B00" maxBarSize={12} isAnimationActive={false} />
+                  <Bar dataKey="hashrate" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
+                    <LabelList dataKey="hashrate" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.005 ? '' : Number(v).toFixed(2).replace('.', ',')} />
+                  </Bar>
                   
                   <Bar dataKey="hashrateBudget" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="hashrateBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '0,00' : Number(v).toFixed(2).replace('.', ',')} />
+                    <LabelList dataKey="hashrateBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.005 ? '0,00' : Number(v).toFixed(2).replace('.', ',')} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -164,10 +175,12 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={false} domain={[0, 800]} />
                   <Legend content={renderLegend} />
                   
-                  <Bar dataKey="consumoX" fill="#D95B00" maxBarSize={12} isAnimationActive={false} />
+                  <Bar dataKey="consumo" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
+                    <LabelList dataKey="consumo" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 10 ? '' : Math.round(Number(v))} />
+                  </Bar>
                   
                   <Bar dataKey="consumoBudget" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="consumoBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '0' : Math.round(Number(v))} />
+                    <LabelList dataKey="consumoBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 10 ? '0' : Math.round(Number(v))} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>

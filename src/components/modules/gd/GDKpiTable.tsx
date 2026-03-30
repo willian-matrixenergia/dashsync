@@ -128,15 +128,21 @@ function ThinBar({ value, color }: { value: number; color: string }) {
 // ----------------------------------------------------
 function AnnualBar({ value, color }: { value: number; color: string }) {
   const pct = Math.min(Math.max(value, 0), 100);
+  
+  // Limita o deslocamento máximo em x para não cortar labels/markers muito próximos da borda.
+  // Se for > 92%, ancoramos à direita do contêiner sem usar translateX(-50%).
+  const isNearEdge = pct > 92;
+
   return (
-    <div className="relative mt-1" style={{ paddingTop: '14px' }}>
+    <div className="relative mt-1 pr-2" style={{ paddingTop: '14px' }}>
       {/* Label acima do marker */}
       <span
         className="absolute text-[9px] text-slate-500"
         style={{
-          left: `${pct}%`,
+          left: isNearEdge ? 'auto' : `${pct}%`,
+          right: isNearEdge ? '0' : 'auto',
           top: 0,
-          transform: 'translateX(-50%)',
+          transform: isNearEdge ? 'none' : 'translateX(-50%)',
           whiteSpace: 'nowrap',
         }}
       >
@@ -153,10 +159,11 @@ function AnnualBar({ value, color }: { value: number; color: string }) {
         <div
           className="absolute top-[-4px]"
           style={{
-            left: `${pct}%`,
+            left: isNearEdge ? 'auto' : `${pct}%`,
+            right: isNearEdge ? '0' : 'auto',
             height: 'calc(100% + 8px)',
             borderLeft: '1px dashed #94a3b8',
-            transform: 'translateX(-50%)',
+            transform: isNearEdge ? 'none' : 'translateX(-50%)',
           }}
         />
       </div>

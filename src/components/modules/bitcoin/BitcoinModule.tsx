@@ -95,11 +95,11 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <Legend content={renderLegend} />
                   
                   <Bar dataKey="btcMinados" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
-                    <LabelList dataKey="btcMinados" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.05 ? '' : Number(v).toFixed(1).replace('.', ',')} />
+                    <LabelList dataKey="btcMinados" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.05 ? '' : Number(v).toFixed(1).replace('.', ',')} offset={8} />
                   </Bar>
                   
                   <Bar dataKey="btcBudget" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="btcBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.05 ? '0,0' : Number(v).toFixed(1).replace('.', ',')} />
+                    <LabelList dataKey="btcBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.05 ? '0,0' : Number(v).toFixed(1).replace('.', ',')} offset={8} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -122,11 +122,11 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <Legend content={renderLegend} />
                   
                   <Bar dataKey="uptimeReal" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
-                    <LabelList dataKey="uptimeReal" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 1.5 ? '' : `${Number(v).toFixed(1).replace('.', ',')}%`} />
+                    <LabelList dataKey="uptimeReal" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 1.5 ? '' : `${Number(v).toFixed(1).replace('.', ',')}%`} offset={8} />
                   </Bar>
                   
                   <Bar dataKey="uptime" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="uptime" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 1.5 ? '0,0%' : `${Number(v).toFixed(1).replace('.', ',')}%`} />
+                    <LabelList dataKey="uptime" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 1.5 ? '0,0%' : `${Number(v).toFixed(1).replace('.', ',')}%`} offset={8} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -149,11 +149,11 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <Legend content={renderLegend} />
                   
                   <Bar dataKey="hashrate" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
-                    <LabelList dataKey="hashrate" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.005 ? '' : Number(v).toFixed(2).replace('.', ',')} />
+                    <LabelList dataKey="hashrate" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.005 ? '' : Number(v).toFixed(2).replace('.', ',')} offset={16} />
                   </Bar>
                   
                   <Bar dataKey="hashrateBudget" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="hashrateBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.005 ? '0,00' : Number(v).toFixed(2).replace('.', ',')} />
+                    <LabelList dataKey="hashrateBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 0.005 ? '0,00' : Number(v).toFixed(2).replace('.', ',')} offset={8} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -176,11 +176,11 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
                   <Legend content={renderLegend} />
                   
                   <Bar dataKey="consumo" fill="#D95B00" maxBarSize={12} isAnimationActive={false}>
-                    <LabelList dataKey="consumo" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 10 ? '' : Math.round(Number(v))} />
+                    <LabelList dataKey="consumo" position="top" fill="#D95B00" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 10 ? '' : Math.round(Number(v))} offset={16} />
                   </Bar>
                   
                   <Bar dataKey="consumoBudget" fill="#CBD5E1" maxBarSize={12}>
-                    <LabelList dataKey="consumoBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 10 ? '0' : Math.round(Number(v))} />
+                    <LabelList dataKey="consumoBudget" position="top" fill="#151B1C" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 10 ? '0' : Math.round(Number(v))} offset={8} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>

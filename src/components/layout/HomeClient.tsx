@@ -315,9 +315,11 @@ export default function HomeClient() {
                   <p className="text-muted-foreground">{session?.user?.email || "board@matrixenergia.com"}</p>
                 </div>
                 {session?.user?.image ? (
-                  <img
+                  <Image
                     src={session.user.image}
                     alt="Avatar"
+                    width={36}
+                    height={36}
                     className="size-9 rounded-full border border-border"
                   />
                 ) : (

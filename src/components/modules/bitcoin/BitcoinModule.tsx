@@ -153,7 +153,7 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
           <div className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm flex flex-col h-[350px]">
             <div className="bg-[#D95B00] px-4 py-3">
               <h2 className="text-white font-bold uppercase tracking-wide text-sm">
-                CONSUMO DE ENERGIA NA SEMANA E CUSTO (R$ '000)
+                CONSUMO DE ENERGIA NA SEMANA E CUSTO (R$ &apos;000)
               </h2>
             </div>
             <div className="flex-1 p-6 relative">

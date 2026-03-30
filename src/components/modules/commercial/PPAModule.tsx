@@ -110,26 +110,26 @@ function RightRow({ contract }: { contract: PPAContract }) {
       </h3>
       <div className="flex-1 grid grid-cols-4 gap-4 lg:gap-8">
         {/* Col 1: Atual + Semana */}
-        <div className="flex flex-col justify-between h-full border-r border-border pr-4">
-          <div>
+        <div className="flex flex-col justify-between h-full border-r border-border pr-2 xl:pr-4 overflow-hidden">
+          <div className="min-w-0">
             <p className="text-[9px] text-gray-500 dark:text-muted-foreground uppercase tracking-[0.2em] mb-1 font-bold">
               Atual
             </p>
-            <p className="text-2xl lg:text-3xl font-bold text-primary tabular-nums break-all tracking-tighter">
+            <p className="text-xl xl:text-2xl 2xl:text-3xl font-bold text-primary tabular-nums tracking-tighter whitespace-nowrap">
               {contract.atual === 0
                 ? '-'
-                : `R$ ${contract.atual.toLocaleString('pt-BR')} k`}
+                : `R$ ${contract.atual.toLocaleString('pt-BR')}k`}
             </p>
           </div>
-          <div className="flex justify-between items-end mt-2">
-            <div>
+          <div className="flex justify-between items-end mt-2 flex-wrap gap-1">
+            <div className="min-w-0">
               <p className="text-[9px] text-gray-500 dark:text-muted-foreground uppercase tracking-[0.2em] mb-1 font-bold">
                 Semana
               </p>
-              <p className="text-base lg:text-lg font-bold text-gray-900 dark:text-foreground tabular-nums tracking-tighter">
+              <p className="text-sm xl:text-base 2xl:text-lg font-bold text-gray-900 dark:text-foreground tabular-nums tracking-tighter whitespace-nowrap">
                 {contract.vsSemana === 0
                   ? '-'
-                  : `${contract.vsSemana > 0 ? '+' : ''}R$ ${Math.abs(contract.vsSemana).toLocaleString('pt-BR')} k`}
+                  : `${contract.vsSemana > 0 ? '+' : ''}R$ ${Math.abs(contract.vsSemana).toLocaleString('pt-BR')}k`}
               </p>
             </div>
             {isUp ? <TriangleUp /> : <TriangleDown />}
@@ -227,14 +227,14 @@ export function PPAModule({ data }: PPAModuleProps) {
         </h3>
 
         {/* Atual + Vs Semana */}
-        <div className="flex justify-between items-end border-b border-white/20 pb-5 mb-6">
-          <div>
+        <div className="flex flex-wrap justify-between items-end border-b border-white/20 pb-5 mb-6 gap-y-4">
+          <div className="min-w-0 pr-2">
             <p className="text-[9px] text-white/50 uppercase tracking-[0.2em] mb-1 font-bold">
               Atual
             </p>
-            <p className="text-4xl lg:text-5xl font-bold text-primary tabular-nums break-all tracking-tighter">
-              R$ {totalAtual.toLocaleString('pt-BR')}{' '}
-              <span className="text-3xl lg:text-4xl">k</span>
+            <p className="text-3xl lg:text-4xl 2xl:text-5xl font-bold text-primary tabular-nums tracking-tighter whitespace-nowrap">
+              R$ {totalAtual.toLocaleString('pt-BR')}
+              <span className="text-2xl lg:text-3xl 2xl:text-4xl ml-1">k</span>
             </p>
           </div>
           <div className="text-right flex items-end gap-3 pb-1">
@@ -242,7 +242,7 @@ export function PPAModule({ data }: PPAModuleProps) {
               <p className="text-[9px] text-white/50 uppercase tracking-[0.2em] mb-1 font-bold">
                 Vs. Última Semana
               </p>
-              <p className="text-xl lg:text-2xl font-bold text-white tabular-nums tracking-tighter">
+              <p className="text-lg lg:text-xl 2xl:text-2xl font-bold text-white tabular-nums tracking-tighter whitespace-nowrap">
                 {totalVsSemana >= 0 ? '+' : ''}R${' '}
                 {Math.abs(totalVsSemana).toLocaleString('pt-BR')}k
               </p>

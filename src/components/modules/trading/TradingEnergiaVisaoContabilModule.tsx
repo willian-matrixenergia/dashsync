@@ -58,22 +58,22 @@ export function TradingEnergiaVisaoContabilModule({
         <div className="text-primary font-bold text-lg">Fev - 2026</div>
       </div>
 
-      <div className="p-6 flex flex-col gap-6">
+      <div className="p-4 lg:p-6 flex flex-col gap-4 lg:gap-6">
         {/* ROW 1 */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 lg:gap-6">
           
           {/* Sessão Superior Esquerda: Visão Contábil - Geração de Caixa */}
-          <div className="border border-slate-200 rounded-lg p-6 relative">
-            <h2 className="text-primary font-bold uppercase tracking-wide text-sm mb-1">
+          <div className="border border-slate-200 rounded-lg p-4 lg:p-6 relative flex flex-col">
+            <h2 className="text-primary font-bold uppercase tracking-wide text-sm mb-1 shrink-0">
               VISÃO CONTÁBIL - GERAÇÃO DE CAIXA (R$ MM)
-              <span className="text-slate-400 font-normal normal-case ml-2 text-xs">
+              <span className="text-slate-400 font-normal normal-case ml-2 text-[10px] lg:text-xs">
                 Visão de geração de caixa inclui Trading Energia, PPA e Operações Estruturadas.
               </span>
             </h2>
 
-            <div className="h-[250px] w-full mt-4">
+            <div className="flex-1 w-full min-h-[200px] mt-2 lg:mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={cashGen} margin={{ top: 20, right: 20, bottom: 20, left: -20 }}>
+                <ComposedChart data={cashGen} margin={{ top: 20, right: 20, bottom: 0, left: -20 }}>
                   <CartesianGrid vertical={false} stroke="#E2E8F0" />
                   <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} dy={10} />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} />
@@ -89,20 +89,20 @@ export function TradingEnergiaVisaoContabilModule({
               </ResponsiveContainer>
             </div>
             
-            <div className="flex gap-6 mt-2 justify-start px-8">
+            <div className="flex gap-4 lg:gap-6 mt-2 justify-start px-4 lg:px-8 shrink-0">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-primary"></div>
-                <span className="text-xs text-slate-500 font-semibold">Geração de Caixa Esperado</span>
+                <span className="text-[10px] lg:text-xs text-slate-500 font-semibold">Geração de Caixa Esperado</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-[#8B4513]"></div>
-                <span className="text-xs text-slate-500 font-semibold">Geração de Caixa realizada</span>
+                <span className="text-[10px] lg:text-xs text-slate-500 font-semibold">Geração de Caixa realizada</span>
               </div>
             </div>
           </div>
 
           {/* Sessão Superior Direita: Meta Anual de Trading */}
-          <div className="border border-slate-200 rounded-lg p-6 flex flex-col justify-center text-center h-full">
+          <div className="border border-slate-200 rounded-lg p-4 flex flex-col justify-center text-center h-full">
             <h2 className="text-primary font-bold text-[13px] mb-3">
               Meta Anual de Trading: gerar R$ 30 MM adicionais de caixa
             </h2>
@@ -130,17 +130,17 @@ export function TradingEnergiaVisaoContabilModule({
         </div>
 
         {/* ROW 2 */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-4 lg:gap-6 flex-1">
           
           {/* Sessão Inferior Esquerda: MTM POR ANO EXPOSIÇÃO LÍQUIDA POR ANO */}
           <div className="flex flex-col gap-4">
-            <div className="border border-primary/30 rounded-xl p-6 bg-[#FF6B00]/[0.02] h-full flex flex-col">
-              <h2 className="text-primary font-bold uppercase tracking-wide text-sm mb-6 shrink-0">
+            <div className="border border-primary/30 rounded-xl p-4 lg:p-6 bg-[#FF6B00]/[0.02] h-full flex flex-col">
+              <h2 className="text-primary font-bold uppercase tracking-wide text-[13px] lg:text-sm mb-4 lg:mb-6 shrink-0">
                 MTM POR ANO EXPOSIÇÃO LÍQUIDA POR ANO (MM R$)
               </h2>
 
-              <div className="flex-1 flex flex-col relative pl-6 lg:pl-8 min-h-[250px]">
-                <div className="w-full flex items-end relative h-full min-h-[250px]">
+              <div className="flex-1 flex flex-col relative pl-6 lg:pl-8 min-h-[180px] lg:min-h-[250px]">
+                <div className="w-full flex items-end relative h-full min-h-[180px] lg:min-h-[250px]">
                   {/* Linhas de grade horizontais */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-slate-200" />
                   <div className="absolute top-1/4 left-0 right-0 h-px bg-slate-200" />
@@ -250,8 +250,8 @@ export function TradingEnergiaVisaoContabilModule({
           </div>
 
           {/* Sessão Inferior Direita: PLD ATUAL */}
-          <div className="border border-slate-200 rounded-lg p-6 bg-white flex flex-col">
-            <h2 className="text-primary font-bold uppercase tracking-wide text-sm mb-4">
+          <div className="border border-slate-200 rounded-lg p-4 lg:p-6 bg-white flex flex-col h-full">
+            <h2 className="text-primary font-bold uppercase tracking-wide text-[13px] lg:text-sm mb-2 lg:mb-4">
               PLD ATUAL (R$/MWH)
             </h2>
             
@@ -259,22 +259,22 @@ export function TradingEnergiaVisaoContabilModule({
               <Table>
                 <TableHeader className="bg-slate-50 border-b border-slate-200">
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="text-sm font-bold text-slate-600 text-center h-10 border-r border-slate-200 w-1/3">Ano</TableHead>
-                    <TableHead className="text-sm font-bold text-slate-600 text-center h-10 border-r border-slate-200 w-1/3">R$/MWh</TableHead>
-                    <TableHead className="text-sm font-bold text-slate-600 text-center h-10 w-1/3">Var %</TableHead>
+                    <TableHead className="text-xs font-bold text-slate-600 text-center h-8 lg:h-10 border-r border-slate-200 w-1/3">Ano</TableHead>
+                    <TableHead className="text-xs font-bold text-slate-600 text-center h-8 lg:h-10 border-r border-slate-200 w-1/3">R$/MWh</TableHead>
+                    <TableHead className="text-xs font-bold text-slate-600 text-center h-8 lg:h-10 w-1/3">Var %</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {pldAtual.map((row) => (
-                    <TableRow key={row.ano} className="border-b border-slate-100 hover:bg-slate-50/50 h-10">
-                      <TableCell className="text-sm font-medium text-slate-500 text-center py-2 border-r border-slate-200">
+                    <TableRow key={row.ano} className="border-b border-slate-100 hover:bg-slate-50/50">
+                      <TableCell className="text-xs font-medium text-slate-500 text-center py-1 lg:py-2 border-r border-slate-200">
                         {row.ano}
                       </TableCell>
-                      <TableCell className="text-sm font-bold text-slate-800 text-center py-2 border-r border-slate-200">
+                      <TableCell className="text-xs font-bold text-slate-800 text-center py-1 lg:py-2 border-r border-slate-200">
                         {row.rsMwh.toFixed(1)}
                       </TableCell>
                       <TableCell className={cn(
-                        "text-sm font-bold text-center py-2",
+                        "text-xs font-bold text-center py-1 lg:py-2",
                         row.varPct > 0 ? "text-success" : row.varPct < 0 ? "text-[#C00000]" : "text-slate-500"
                       )}>
                         {row.varPct > 0 ? '+' : ''}{row.varPct.toFixed(1).replace('.', ',')}%

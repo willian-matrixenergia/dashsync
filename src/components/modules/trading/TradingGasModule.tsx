@@ -58,11 +58,11 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 5000]} ticks={[0, 1000, 2000, 3000, 4000, 5000]} />
                   
                   <Bar dataKey="margemTotal" fill="#D95B00" maxBarSize={16}>
-                    <LabelList dataKey="margemTotal" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '' : Number(v).toLocaleString('pt-BR')} />
+                    <LabelList dataKey="margemTotal" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                   
                   <Bar dataKey="margemTotalBudget" fill="#CBD5E1" maxBarSize={16}>
-                    <LabelList dataKey="margemTotalBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '' : Number(v).toLocaleString('pt-BR')} />
+                    <LabelList dataKey="margemTotalBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -87,11 +87,11 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 5000]} ticks={[0, 1000, 2000, 3000, 4000, 5000]} />
                   
                   <Bar dataKey="margemSpot" fill="#D95B00" maxBarSize={16}>
-                    <LabelList dataKey="margemSpot" position="right" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '' : Number(v).toLocaleString('pt-BR')} dx={2} />
+                    <LabelList dataKey="margemSpot" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                   
                   <Bar dataKey="margemSpotBudget" fill="#CBD5E1" maxBarSize={16}>
-                    <LabelList dataKey="margemSpotBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '' : Number(v).toLocaleString('pt-BR')} />
+                    <LabelList dataKey="margemSpotBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -113,7 +113,7 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 2000]} ticks={[0, 500, 1000, 1500, 2000]} />
                   
                   <Bar dataKey="exposicao" fill="#A0522D" maxBarSize={20}>
-                    <LabelList dataKey="exposicao" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+                    <LabelList dataKey="exposicao" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 0.1 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -135,7 +135,7 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 50]} ticks={[0, 10, 20, 30, 40, 50]} />
                   
                   <Bar dataKey="penalidade" fill="#A0522D" maxBarSize={20}>
-                    <LabelList dataKey="penalidade" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v === 0 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+                    <LabelList dataKey="penalidade" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 0.1 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>

@@ -102,27 +102,27 @@ export function TradingEnergiaVisaoContabilModule({
           </div>
 
           {/* Sessão Superior Direita: Meta Anual de Trading */}
-          <div className="border border-slate-200 rounded-lg p-6 flex flex-col justify-center text-center">
-            <h2 className="text-primary font-bold text-sm mb-6">
-              Meta Anual de Trading: gerar R$ 30 MM adicionais<br/>de caixa
+          <div className="border border-slate-200 rounded-lg p-6 flex flex-col justify-center text-center h-full">
+            <h2 className="text-primary font-bold text-[13px] mb-3">
+              Meta Anual de Trading: gerar R$ 30 MM adicionais de caixa
             </h2>
             
-            <div className="mb-4">
-              <p className="text-xs text-slate-500 font-bold mb-4">Atingimento Anual</p>
+            <div className="mb-2">
+              <p className="text-xs text-slate-500 font-bold mb-2">Atingimento Anual</p>
               
-              <div className="flex items-center justify-center gap-4">
-                <span className="text-lg font-bold text-slate-800">1%</span>
-                <div className="w-48 h-4 bg-slate-100 border border-slate-200 rounded-sm overflow-hidden flex">
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-base font-bold text-slate-800">1%</span>
+                <div className="w-40 lg:w-48 h-3 bg-slate-100 border border-slate-200 rounded-sm overflow-hidden flex">
                   <div className="h-full bg-primary" style={{ width: '1%' }}></div>
                 </div>
               </div>
               
-              <p className="text-xs text-slate-500 font-bold mt-4">
+              <p className="text-[11px] text-slate-500 font-bold mt-2">
                 acumulado ano: R$ 3.6 MM
               </p>
             </div>
             
-            <p className="text-[10px] text-slate-400 mt-6 leading-tight max-w-[280px] mx-auto">
+            <p className="text-[9px] text-slate-400 mt-3 leading-tight max-w-[280px] mx-auto">
               *Meta de 30 MM está incluída nos números a partir de Abril. Período anterior dedicado à proteção do portfólio.
             </p>
           </div>
@@ -139,7 +139,7 @@ export function TradingEnergiaVisaoContabilModule({
                 MTM POR ANO EXPOSIÇÃO LÍQUIDA POR ANO (MM R$)
               </h2>
 
-              <div className="flex-1 flex flex-col relative">
+              <div className="flex-1 flex flex-col relative pl-6 lg:pl-8">
                 <div className="flex-1 flex items-end relative h-[250px]">
                   {/* Linhas de grade horizontais */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-slate-200" />
@@ -149,40 +149,36 @@ export function TradingEnergiaVisaoContabilModule({
                   <div className="absolute bottom-0 left-0 right-0 h-px bg-slate-200" />
 
                   {/* Y-Axis labels estáticos */}
-                  <div className="absolute top-0 -left-8 text-[10px] text-slate-400">250</div>
-                  <div className="absolute top-1/4 -left-8 text-[10px] text-slate-400">200</div>
-                  <div className="absolute top-1/2 -left-8 text-[10px] text-slate-400">0</div>
-                  <div className="absolute top-3/4 -left-8 text-[10px] text-slate-400">-50</div>
+                  <div className="absolute top-0 left-2 lg:-left-2 text-[10px] text-slate-400">250</div>
+                  <div className="absolute top-1/4 left-2 lg:-left-2 text-[10px] text-slate-400">200</div>
+                  <div className="absolute top-1/2 left-2 lg:-left-2 text-[10px] text-slate-400">0</div>
+                  <div className="absolute top-3/4 left-2 lg:-left-2 text-[10px] text-slate-400">-50</div>
 
                   {exposicaoMmR.map((d) => {
                     const heightPct = (Math.abs(d.mtmMmR) / maxMtm) * 50;
                     const isPositive = d.mtmMmR >= 0;
 
                     return (
-                      <div key={d.ano} className="flex-1 flex flex-col justify-end h-full group z-10">
-                        <div className="flex-1 relative w-full flex items-center justify-center">
-                          {isPositive ? (
-                            <div
-                              className="absolute bottom-1/2 flex flex-col items-center justify-end w-full"
-                              style={{ height: `${heightPct}%` }}
-                            >
-                              <span className="text-[11px] font-bold text-slate-800 mb-1">
-                                {d.mtmMmR.toFixed(1).replace('.', ',')}
-                              </span>
-                              <div className="w-8 lg:w-10 bg-[#D95B00] h-full shadow-sm" />
-                            </div>
-                          ) : (
-                            <div
-                              className="absolute top-1/2 flex flex-col items-center justify-start w-full"
-                              style={{ height: `${heightPct}%` }}
-                            >
-                              <div className="w-8 lg:w-10 bg-[#D95B00] h-full shadow-sm" />
-                              <span className="text-[11px] font-bold text-slate-800 mt-1">
-                                {d.mtmMmR.toFixed(1).replace('.', ',')}
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                      <div key={d.ano} className="flex-1 relative h-full flex justify-center group z-10">
+                        {isPositive ? (
+                          <div
+                            className="absolute bottom-1/2 w-6 lg:w-10 bg-[#D95B00] shadow-sm rounded-t-sm"
+                            style={{ height: `${heightPct}%` }}
+                          >
+                            <span className="absolute bottom-full left-1/2 -translate-x-1/2 text-[10px] lg:text-[11px] font-bold text-slate-800 mb-1">
+                              {d.mtmMmR.toFixed(1).replace('.', ',')}
+                            </span>
+                          </div>
+                        ) : (
+                          <div
+                            className="absolute top-1/2 w-6 lg:w-10 bg-[#D95B00] shadow-sm rounded-b-sm"
+                            style={{ height: `${heightPct}%` }}
+                          >
+                            <span className="absolute top-full left-1/2 -translate-x-1/2 text-[10px] lg:text-[11px] font-bold text-slate-800 mt-1">
+                              {d.mtmMmR.toFixed(1).replace('.', ',')}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     );
                   })}

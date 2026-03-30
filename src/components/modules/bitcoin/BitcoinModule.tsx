@@ -36,12 +36,12 @@ export function BitcoinModule({ metrics, evolution }: BitcoinModuleProps) {
   // Configuração padrão para a legenda idêntica à imagem
   const renderLegend = () => {
     return (
-      <div className="flex flex-col gap-2 text-[10px] font-bold text-slate-700 ml-4 absolute right-4 top-1/2 -translate-y-1/2">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center justify-end gap-4 text-[10px] font-bold text-slate-700 mt-2 mr-4">
+        <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 bg-[#D95B00]"></div>
           <span>Actual</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 bg-[#CBD5E1]"></div>
           <span>Budget</span>
         </div>

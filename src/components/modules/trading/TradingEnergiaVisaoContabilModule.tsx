@@ -134,13 +134,13 @@ export function TradingEnergiaVisaoContabilModule({
           
           {/* Sessão Inferior Esquerda: MTM POR ANO EXPOSIÇÃO LÍQUIDA POR ANO */}
           <div className="flex flex-col gap-4">
-            <div className="border border-primary/30 rounded-xl p-6 bg-[#FF6B00]/[0.02]">
-              <h2 className="text-primary font-bold uppercase tracking-wide text-sm mb-6">
+            <div className="border border-primary/30 rounded-xl p-6 bg-[#FF6B00]/[0.02] h-full flex flex-col">
+              <h2 className="text-primary font-bold uppercase tracking-wide text-sm mb-6 shrink-0">
                 MTM POR ANO EXPOSIÇÃO LÍQUIDA POR ANO (MM R$)
               </h2>
 
-              <div className="flex-1 flex flex-col relative pl-6 lg:pl-8">
-                <div className="flex-1 flex items-end relative h-[250px]">
+              <div className="flex-1 flex flex-col relative pl-6 lg:pl-8 min-h-[250px]">
+                <div className="w-full flex items-end relative h-full min-h-[250px]">
                   {/* Linhas de grade horizontais */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-slate-200" />
                   <div className="absolute top-1/4 left-0 right-0 h-px bg-slate-200" />
@@ -148,11 +148,22 @@ export function TradingEnergiaVisaoContabilModule({
                   <div className="absolute top-3/4 left-0 right-0 h-px bg-slate-200" />
                   <div className="absolute bottom-0 left-0 right-0 h-px bg-slate-200" />
 
-                  {/* Y-Axis labels estáticos */}
-                  <div className="absolute top-0 left-2 lg:-left-2 text-[10px] text-slate-400">250</div>
-                  <div className="absolute top-1/4 left-2 lg:-left-2 text-[10px] text-slate-400">200</div>
-                  <div className="absolute top-1/2 left-2 lg:-left-2 text-[10px] text-slate-400">0</div>
-                  <div className="absolute top-3/4 left-2 lg:-left-2 text-[10px] text-slate-400">-50</div>
+                  {/* Y-Axis labels dinâmicos */}
+                  <div className="absolute top-0 -left-6 lg:-left-8 text-[10px] text-slate-400">
+                    {Math.ceil(maxMtm).toString()}
+                  </div>
+                  <div className="absolute top-1/4 -left-6 lg:-left-8 text-[10px] text-slate-400">
+                    {Math.ceil(maxMtm / 2).toString()}
+                  </div>
+                  <div className="absolute top-1/2 -left-6 lg:-left-8 text-[10px] text-slate-400">
+                    0
+                  </div>
+                  <div className="absolute top-3/4 -left-6 lg:-left-8 text-[10px] text-slate-400">
+                    -{Math.ceil(maxMtm / 2).toString()}
+                  </div>
+                  <div className="absolute bottom-0 -left-6 lg:-left-8 text-[10px] text-slate-400">
+                    -{Math.ceil(maxMtm).toString()}
+                  </div>
 
                   {exposicaoMmR.map((d) => {
                     const heightPct = (Math.abs(d.mtmMmR) / maxMtm) * 50;
@@ -186,7 +197,7 @@ export function TradingEnergiaVisaoContabilModule({
                 
                 {/* Eixo X e Setas de Delta */}
                 <div className="mt-2 flex flex-col">
-                  <div className="flex justify-between items-center text-[11px] font-bold text-slate-500 mb-6">
+                  <div className="flex justify-between items-center text-[11px] font-bold text-slate-500 mb-2">
                     {exposicaoMmR.map((d) => (
                       <div key={d.ano} className="flex-1 text-center">
                         {d.ano}
@@ -215,14 +226,14 @@ export function TradingEnergiaVisaoContabilModule({
                             {/* Base para a seta visual (Chevron cinza) */}
                             <div className="w-8 h-4 bg-slate-200 shrink-0" style={{ clipPath: 'polygon(0% 0%, 100% 0%, 50% 100%)' }} />
                             
-                            <div className="flex flex-col items-center gap-1 mt-4">
-                              {isUp && <ArrowUp className="w-5 h-5 text-success drop-shadow-sm" strokeWidth={4} />}
-                              {isDown && <ArrowDown className="w-5 h-5 text-[#C00000] drop-shadow-sm" strokeWidth={4} />}
+                            <div className="flex flex-col items-center gap-0.5 mt-2">
+                              {isUp && <ArrowUp className="w-4 h-4 text-success drop-shadow-sm" strokeWidth={4} />}
+                              {isDown && <ArrowDown className="w-4 h-4 text-[#C00000] drop-shadow-sm" strokeWidth={4} />}
                               {delta === 0 && <span className="text-slate-400 font-bold">-</span>}
                               
                               {(isUp || isDown) && (
                                 <span
-                                  className="text-[11px] font-bold text-slate-800 mt-1"
+                                  className="text-[10px] font-bold text-slate-800"
                                 >
                                   {isUp ? '+' : ''}{delta.toFixed(2)}
                                 </span>
@@ -248,22 +259,22 @@ export function TradingEnergiaVisaoContabilModule({
               <Table>
                 <TableHeader className="bg-slate-50 border-b border-slate-200">
                   <TableRow className="hover:bg-transparent">
-                    <TableHead className="text-sm font-bold text-slate-600 text-center h-12 border-r border-slate-200 w-1/3">Ano</TableHead>
-                    <TableHead className="text-sm font-bold text-slate-600 text-center h-12 border-r border-slate-200 w-1/3">R$/MWh</TableHead>
-                    <TableHead className="text-sm font-bold text-slate-600 text-center h-12 w-1/3">Var %</TableHead>
+                    <TableHead className="text-sm font-bold text-slate-600 text-center h-10 border-r border-slate-200 w-1/3">Ano</TableHead>
+                    <TableHead className="text-sm font-bold text-slate-600 text-center h-10 border-r border-slate-200 w-1/3">R$/MWh</TableHead>
+                    <TableHead className="text-sm font-bold text-slate-600 text-center h-10 w-1/3">Var %</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {pldAtual.map((row) => (
-                    <TableRow key={row.ano} className="border-b border-slate-100 hover:bg-slate-50/50">
-                      <TableCell className="text-sm font-medium text-slate-500 text-center py-4 border-r border-slate-200">
+                    <TableRow key={row.ano} className="border-b border-slate-100 hover:bg-slate-50/50 h-10">
+                      <TableCell className="text-sm font-medium text-slate-500 text-center py-2 border-r border-slate-200">
                         {row.ano}
                       </TableCell>
-                      <TableCell className="text-sm font-bold text-slate-800 text-center py-4 border-r border-slate-200">
+                      <TableCell className="text-sm font-bold text-slate-800 text-center py-2 border-r border-slate-200">
                         {row.rsMwh.toFixed(1)}
                       </TableCell>
                       <TableCell className={cn(
-                        "text-sm font-bold text-center py-4",
+                        "text-sm font-bold text-center py-2",
                         row.varPct > 0 ? "text-success" : row.varPct < 0 ? "text-[#C00000]" : "text-slate-500"
                       )}>
                         {row.varPct > 0 ? '+' : ''}{row.varPct.toFixed(1).replace('.', ',')}%

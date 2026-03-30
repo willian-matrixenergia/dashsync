@@ -42,8 +42,9 @@ const TV_SLIDES = [
   { moduleId: 'comercial' as TabId, label: 'Comercial — PPA',          tvSlide: 0 },
   { moduleId: 'comercial' as TabId, label: 'Comercial — Energia Fácil', tvSlide: 1 },
   { moduleId: 'comercial' as TabId, label: 'Comercial — BESS',          tvSlide: 2 },
-  { moduleId: 'trading' as TabId,  label: 'Trading Energia',           tvSlide: 0 },
-  { moduleId: 'trading' as TabId,  label: 'Trading Gás',               tvSlide: 1 },
+  { moduleId: 'trading' as TabId,  label: 'Trading — Visão Contábil',  tvSlide: 0 },
+  { moduleId: 'trading' as TabId,  label: 'Trading — Energia',         tvSlide: 1 },
+  { moduleId: 'trading' as TabId,  label: 'Trading — Gás',             tvSlide: 2 },
   { moduleId: 'bitcoin' as TabId,  label: 'Bitcoin',                   tvSlide: 0 },
   { moduleId: 'bitcoin' as TabId,  label: 'Operações Estruturadas',    tvSlide: 1 },
 ] as const;

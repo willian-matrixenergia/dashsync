@@ -96,6 +96,15 @@ export function TradingModule({ tvSlide }: TradingModuleProps) {
       <div className="h-full w-full flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-700">
         {tvSlide === 0 && (
           <div className="flex-1 overflow-hidden">
+            <TradingEnergiaVisaoContabilModule
+              cashGen={data.energia.cashGen}
+              exposicaoMmR={data.energia.exposicaoMmR}
+              pldAtual={data.energia.pldAtual}
+            />
+          </div>
+        )}
+        {tvSlide === 1 && (
+          <div className="flex-1 overflow-hidden">
             <TradingEnergiaModule
               exposicaoGwh={data.energia.exposicaoGwh}
               kpiSemanal={data.energia.kpiSemanal}
@@ -103,7 +112,7 @@ export function TradingModule({ tvSlide }: TradingModuleProps) {
             />
           </div>
         )}
-        {tvSlide === 1 && (
+        {tvSlide === 2 && (
           <div className="flex-1 overflow-hidden">
             <TradingGasModule data={data.gas} />
           </div>

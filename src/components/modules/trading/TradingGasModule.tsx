@@ -8,6 +8,7 @@ import {
   YAxis,
   ResponsiveContainer,
   LabelList,
+  Legend,
 } from 'recharts';
 import type { TradingGasMetrics } from '@/src/types/energy';
 
@@ -16,6 +17,36 @@ interface TradingGasModuleProps {
 }
 
 export function TradingGasModule({ data }: TradingGasModuleProps) {
+  // Configuração padrão para a legenda
+  const renderLegend = () => {
+    return (
+      <div className="flex flex-col gap-2 text-[10px] font-bold text-slate-700 ml-4 absolute right-4 top-1/2 -translate-y-1/2">
+        <div className="flex items-center gap-1">
+          <div className="w-2.5 h-2.5 bg-[#D95B00]"></div>
+          <span>Realizado</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-2.5 h-2.5 bg-[#CBD5E1]"></div>
+          <span>Budget</span>
+        </div>
+      </div>
+    );
+  };
+
+  // Hack: Recharts não renderiza bem eixos quando todos os valores (exceto o primeiro) são exatamente 0. 
+  // Isso quebra a linha visual base e a proporção da barra isolada. Inserir uma base mínima (ex: 20 ou 100) garante a "régua" inferior.
+  const mappedEvolution = data.evolution.map((item) => {
+    return {
+      ...item,
+      margemTotal: item.margemTotal === 0 ? 50 : item.margemTotal,
+      margemSpot: item.margemSpot === 0 ? 50 : item.margemSpot,
+      exposicao: item.exposicao === 0 ? 20 : item.exposicao,
+      penalidade: item.penalidade === 0 ? 1 : item.penalidade,
+      margemTotalBudget: item.margemTotalBudget === 0 ? 50 : item.margemTotalBudget,
+      margemSpotBudget: item.margemSpotBudget === 0 ? 50 : item.margemSpotBudget,
+    };
+  });
+
   return (
     <div className="flex flex-col w-full bg-white text-slate-800 rounded-xl overflow-hidden shadow-sm border border-slate-200">
       {/* 1. Header Principal */}
@@ -52,17 +83,18 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
                 {data.atingimentoMargemTotal}%
               </div>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.evolution} margin={{ top: 20, right: 0, bottom: 0, left: -10 }} barGap={0}>
+                <BarChart data={mappedEvolution} margin={{ top: 20, right: 60, bottom: 0, left: -10 }} barGap={0}>
                   <CartesianGrid vertical={false} stroke="#E2E8F0" />
                   <XAxis dataKey="mes" axisLine={true} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} dy={10} stroke="#CBD5E1" />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 5000]} ticks={[0, 1000, 2000, 3000, 4000, 5000]} />
+                  <Legend content={renderLegend} />
                   
                   <Bar dataKey="margemTotal" fill="#D95B00" maxBarSize={16}>
-                    <LabelList dataKey="margemTotal" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
+                    <LabelList dataKey="margemTotal" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 50 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                   
                   <Bar dataKey="margemTotalBudget" fill="#CBD5E1" maxBarSize={16}>
-                    <LabelList dataKey="margemTotalBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
+                    <LabelList dataKey="margemTotalBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 50 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -81,17 +113,18 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
                 {data.atingimentoMargemSpot}%
               </div>
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.evolution} margin={{ top: 20, right: 0, bottom: 0, left: -10 }} barGap={0}>
+                <BarChart data={mappedEvolution} margin={{ top: 20, right: 60, bottom: 0, left: -10 }} barGap={0}>
                   <CartesianGrid vertical={false} stroke="#E2E8F0" />
                   <XAxis dataKey="mes" axisLine={true} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} dy={10} stroke="#CBD5E1" />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 5000]} ticks={[0, 1000, 2000, 3000, 4000, 5000]} />
+                  <Legend content={renderLegend} />
                   
                   <Bar dataKey="margemSpot" fill="#D95B00" maxBarSize={16}>
-                    <LabelList dataKey="margemSpot" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
+                    <LabelList dataKey="margemSpot" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 50 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                   
                   <Bar dataKey="margemSpotBudget" fill="#CBD5E1" maxBarSize={16}>
-                    <LabelList dataKey="margemSpotBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 1 ? '' : Number(v).toLocaleString('pt-BR')} />
+                    <LabelList dataKey="margemSpotBudget" position="bottom" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 50 ? '' : Number(v).toLocaleString('pt-BR')} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -107,13 +140,13 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
             </div>
             <div className="flex-1 p-6 relative">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.evolution} margin={{ top: 20, right: 0, bottom: 0, left: -10 }}>
+                <BarChart data={mappedEvolution} margin={{ top: 20, right: 60, bottom: 0, left: -10 }}>
                   <CartesianGrid vertical={false} stroke="#E2E8F0" />
                   <XAxis dataKey="mes" axisLine={true} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} dy={10} stroke="#CBD5E1" />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 2000]} ticks={[0, 500, 1000, 1500, 2000]} />
                   
                   <Bar dataKey="exposicao" fill="#A0522D" maxBarSize={20}>
-                    <LabelList dataKey="exposicao" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 0.1 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+                    <LabelList dataKey="exposicao" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 20 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -129,13 +162,13 @@ export function TradingGasModule({ data }: TradingGasModuleProps) {
             </div>
             <div className="flex-1 p-6 relative">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data.evolution} margin={{ top: 20, right: 0, bottom: 0, left: -10 }}>
+                <BarChart data={mappedEvolution} margin={{ top: 20, right: 60, bottom: 0, left: -10 }}>
                   <CartesianGrid vertical={false} stroke="#E2E8F0" />
                   <XAxis dataKey="mes" axisLine={true} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} dy={10} stroke="#CBD5E1" />
                   <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748B' }} domain={[0, 50]} ticks={[0, 10, 20, 30, 40, 50]} />
                   
                   <Bar dataKey="penalidade" fill="#A0522D" maxBarSize={20}>
-                    <LabelList dataKey="penalidade" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v < 0.1 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
+                    <LabelList dataKey="penalidade" position="top" fill="#1e293b" fontSize={11} fontWeight="bold" formatter={(v: any) => v <= 1 ? '' : Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>

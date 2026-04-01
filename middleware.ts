@@ -17,10 +17,17 @@ export default auth((req) => {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Logged-in users trying to access the login page -> redirect to dashboard
+  if (isLoggedIn && isLoginPage) {
+    return NextResponse.redirect(new URL('/', req.url));
+  }
+
   // Normal pages without session -> redirect to login
   if (!isLoggedIn && !isLoginPage) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
+
+  return NextResponse.next();
 });
 
 export const config = {
